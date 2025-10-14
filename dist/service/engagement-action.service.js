@@ -38,7 +38,6 @@ let EngagementActionService = class EngagementActionService extends engagement_s
             where: { userId, targetId, targetType, type },
         });
         if (existing) {
-            // toggle logic (for likes/bookmarks)
             await this.actionRepository.remove(existing);
             return { removed: true };
         }
@@ -116,3 +115,4 @@ exports.EngagementActionService = EngagementActionService = __decorate([
         typeorm_2.Repository, Object, Object, engagement_emitter_1.EngagementEmitter,
         typeorm_2.Repository])
 ], EngagementActionService);
+//# sourceMappingURL=engagement-action.service.js.map

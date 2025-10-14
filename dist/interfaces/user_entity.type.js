@@ -15,3 +15,4 @@ var EngagementActionType;
     EngagementActionType["share"] = "share";
     EngagementActionType["follow"] = "follow";
 })(EngagementActionType || (exports.EngagementActionType = EngagementActionType = {}));
+//# sourceMappingURL=user_entity.type.js.map

@@ -11,12 +11,9 @@ interface GetEngageablesOptions<T extends ObjectLiteral> {
     };
     transform?: (item: T) => Promise<any> | any;
 }
-/**
- * Public static API users can call to get paginated engageables with engagements.
- */
 export declare class EngageablePlugin {
     static getEngageablesWithEngagements<T extends ObjectLiteral>({ rootType, repository, dataSource, where, pagination, transform, }: GetEngageablesOptions<T>): Promise<{
-        data: never[];
+        data: any[];
         total: number;
         page: number;
         limit: number;
@@ -36,9 +33,6 @@ export interface PaginatedResult<T> {
     limit: number;
     totalPages: number;
 }
-/**
- * Main utility for plugin users to fetch entities with fully nested engagement data.
- */
 export declare function getEngagedEntities<T extends {
     id: string;
     engagement: EngagementTarget | null;

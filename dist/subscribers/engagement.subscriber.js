@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementSubscriber = void 0;
-// src/subscribers/engagement.subscriber.ts
 const typeorm_1 = require("typeorm");
 const common_1 = require("@nestjs/common");
 const engagement_target_entity_1 = require("../entities/engagement-target.entity");
@@ -30,27 +29,9 @@ let EngagementSubscriber = class EngagementSubscriber {
         this.dataSource.subscribers.push(this);
     }
     async afterInsert(event) {
-        // // Skip if autoCreateTargets is disabled
-        // if (!this.options.autoCreateTargets) return;
-        // const metadata = Reflect.getMetadata(
-        //   ENGAGEABLE_METADATA_KEY,
-        //   event.metadata.target,
-        // );
-        // if (!metadata) return; // entity is not @Engageable
-        // const targetRepo = event.manager.getRepository(EngagementTarget);
-        // const exists = await targetRepo.findOne({
-        //   where: { targetType: metadata, targetId: event.entity.id },
-        // });
-        // if (!exists) {
-        //   const newTarget = targetRepo.create({
-        //     targetType: metadata,
-        //     targetId: event.entity.id,
-        //   });
-        //   await targetRepo.save(newTarget);
-        // }
         const targetType = engagement_registry_1.EngagementRegistry.get(event.metadata.targetName);
         if (!targetType)
-            return; // Not an engageable entity
+            return;
         const targetRepo = event.manager.getRepository(engagement_target_entity_1.EngagementTarget);
         let target = await targetRepo.findOne({
             where: { targetType, targetId: event.entity.id },
@@ -58,7 +39,6 @@ let EngagementSubscriber = class EngagementSubscriber {
         if (!target && this.options.autoCreateTargets) {
             target = targetRepo.create({ targetType, targetId: event.entity.id });
             await targetRepo.save(target);
-            // Link back to entity
             if ('engagementTarget' in event.entity) {
                 event.entity.engagementTarget = target;
                 await event.manager.save(event.entity);
@@ -74,3 +54,4 @@ exports.EngagementSubscriber = EngagementSubscriber = __decorate([
     __param(1, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
     __metadata("design:paramtypes", [typeorm_1.DataSource, Object, engagement_emitter_1.EngagementEmitter])
 ], EngagementSubscriber);
+//# sourceMappingURL=engagement.subscriber.js.map

@@ -8,6 +8,7 @@ function Engageable(typeName) {
     return (target) => {
         const name = typeName || target.name.toLowerCase();
         Reflect.defineMetadata(exports.ENGAGEABLE_METADATA_KEY, name, target);
-        engagement_registry_1.EngagementRegistry.register(name, target); // <— new addition
+        engagement_registry_1.EngagementRegistry.register(name, target);
     };
 }
+//# sourceMappingURL=engageable.decorator.js.map

@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var EngagementModule_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementModule = void 0;
-// src/engagement.module.ts
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const engagement_service_1 = require("./service/engagement.service");
@@ -29,7 +28,6 @@ const like_service_1 = require("./service/like.service");
 const default_auth_guard_1 = require("./default-auth-guard");
 let EngagementModule = EngagementModule_1 = class EngagementModule {
     static register(options) {
-        var _a, _b, _c, _d, _e, _f, _g;
         const imports = [
             typeorm_1.TypeOrmModule.forFeature([
                 engagement_target_entity_1.EngagementTarget,
@@ -39,11 +37,11 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
             ]),
             event_emitter_1.EventEmitterModule.forRoot(),
         ];
-        if (options === null || options === void 0 ? void 0 : options.userEntity) {
+        if (options?.userEntity) {
             imports.push(typeorm_1.TypeOrmModule.forFeature([options.userEntity]));
             (0, register_user_relation_1.registerUserRelation)(options.userEntity);
         }
-        if (options === null || options === void 0 ? void 0 : options.engageableEntities) {
+        if (options?.engageableEntities) {
             options.engageableEntities.forEach((entity) => {
                 engagement_registry_1.EngagementRegistry.register(entity);
             });
@@ -61,20 +59,20 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
                 {
                     provide: constants_1.EngagementOptionsKey,
                     useValue: {
-                        autoCreateTargets: (_a = options === null || options === void 0 ? void 0 : options.autoCreateTargets) !== null && _a !== void 0 ? _a : true,
-                        lazyLinking: (_b = options === null || options === void 0 ? void 0 : options.lazyLinking) !== null && _b !== void 0 ? _b : true,
-                        emitEvents: (_c = options === null || options === void 0 ? void 0 : options.emitEvents) !== null && _c !== void 0 ? _c : true,
-                        userEntity: (_d = options === null || options === void 0 ? void 0 : options.userEntity) !== null && _d !== void 0 ? _d : null,
-                        allowAnonymous: (_e = options === null || options === void 0 ? void 0 : options.allowAnonymous) !== null && _e !== void 0 ? _e : false,
+                        autoCreateTargets: options?.autoCreateTargets ?? true,
+                        lazyLinking: options?.lazyLinking ?? true,
+                        emitEvents: options?.emitEvents ?? true,
+                        userEntity: options?.userEntity ?? null,
+                        allowAnonymous: options?.allowAnonymous ?? false,
                     },
                 },
                 {
                     provide: constants_1.UserEntityKey,
-                    useValue: (_f = options === null || options === void 0 ? void 0 : options.userEntity) !== null && _f !== void 0 ? _f : null,
+                    useValue: options?.userEntity ?? null,
                 },
                 {
                     provide: constants_1.AUTH_GUARD_KEY,
-                    useClass: (_g = options === null || options === void 0 ? void 0 : options.authGuard) !== null && _g !== void 0 ? _g : default_auth_guard_1.DefaultEngagementAuthGuard,
+                    useClass: options?.authGuard ?? default_auth_guard_1.DefaultEngagementAuthGuard,
                 },
             ],
             controllers: [engagement_controller_1.EngagementController],
@@ -86,3 +84,4 @@ exports.EngagementModule = EngagementModule;
 exports.EngagementModule = EngagementModule = EngagementModule_1 = __decorate([
     (0, common_1.Module)({})
 ], EngagementModule);
+//# sourceMappingURL=engagement.module.js.map

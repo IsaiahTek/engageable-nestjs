@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentService = void 0;
 const common_1 = require("@nestjs/common");
 const comment_entity_1 = require("../entities/comment.entity");
-// import { EngagementUser as User } from '../entities/base/engagement-user.entity';
 const typeorm_1 = require("typeorm");
 const engagement_emitter_1 = require("../event-emitters/engagement.emitter");
 const engagement_service_1 = require("./engagement.service");
@@ -51,15 +50,12 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
     async updateComment(commentId, content) {
         return await this._updateComment(commentId, content);
     }
-    // Helper to recursively fetch replies
     async getCommentReplies(commentId) {
-        // 1️⃣ Fetch replies to the current comment
         const replies = await this.commentRepo.find({
             where: { parent: { id: commentId } },
             relations: ['user', 'likes'],
             order: { createdAt: 'DESC' },
         });
-        // 2️⃣ Recursively fetch deeper replies (threaded comments)
         for (const reply of replies) {
             reply.replies = await this.getCommentReplies(reply.id);
         }
@@ -101,7 +97,6 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
         });
         if (!target)
             throw new common_1.NotFoundException('Target not found');
-        // Get comments for this target, including their users, likes, and replies
         return this.commentRepo.find({
             where: { engagement: target },
             relations: [
@@ -147,3 +142,4 @@ exports.CommentService = CommentService = __decorate([
         typeorm_1.Repository, Object, Object, engagement_emitter_1.EngagementEmitter,
         typeorm_1.Repository])
 ], CommentService);
+//# sourceMappingURL=comment.service.js.map

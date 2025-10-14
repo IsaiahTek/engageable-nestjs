@@ -1,0 +1,1 @@
+{"version":3,"file":"default-auth-guard.js","sourceRoot":"","sources":["../src/default-auth-guard.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAA2E;AAGpE,IAAM,0BAA0B,GAAhC,MAAM,0BAA0B;IAErC,WAAW,CAAC,OAAyB;QAEnC,OAAO,IAAI,CAAC;IACd,CAAC;CACF,CAAA;AANY,gEAA0B;qCAA1B,0BAA0B;IADtC,IAAA,mBAAU,GAAE;GACA,0BAA0B,CAMtC"}

@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementController = void 0;
-// engagement.controller.ts
 const common_1 = require("@nestjs/common");
 const engagement_service_1 = require("../service/engagement.service");
 const swagger_1 = require("@nestjs/swagger");
@@ -66,9 +65,8 @@ let EngagementController = class EngagementController {
         };
     }
     async addLike(targetType, targetId, req) {
-        var _a;
         this.checkIsRegisteredRoute(targetType);
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id; // Extract the ID from the authenticated user
+        const userId = req.user?.id;
         console.log('addLike: ', req.user, userId, targetType, targetId);
         return this.likeService.toggleLike(userId, targetType, targetId);
     }
@@ -230,3 +228,4 @@ exports.EngagementController = EngagementController = __decorate([
         comment_service_1.CommentService,
         like_service_1.LikeService, Object])
 ], EngagementController);
+//# sourceMappingURL=engagement.controller.js.map

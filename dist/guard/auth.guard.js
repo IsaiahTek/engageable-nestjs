@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementAuthGuard = void 0;
-// src/guards/engagement-auth.guard.ts
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const constants_1 = require("../utils/constants");
@@ -20,8 +19,6 @@ let EngagementAuthGuard = class EngagementAuthGuard {
         this.resolvedGuard = null;
     }
     async canActivate(context) {
-        var _a;
-        // Resolve the host app’s actual auth guard dynamically
         if (!this.resolvedGuard) {
             try {
                 this.resolvedGuard = this.moduleRef.get(constants_1.AUTH_GUARD_KEY, { strict: false });
@@ -30,8 +27,7 @@ let EngagementAuthGuard = class EngagementAuthGuard {
                 throw new Error(`Auth guard with token "${constants_1.AUTH_GUARD_KEY}" not found. Please register it in your AppModule.`);
             }
         }
-        const result = await Promise.resolve((_a = this.resolvedGuard) === null || _a === void 0 ? void 0 : _a.canActivate(context));
-        // Ensure the guard actually attached a user to the request
+        const result = await Promise.resolve(this.resolvedGuard?.canActivate(context));
         const request = context.switchToHttp().getRequest();
         if (!request.user) {
             console.warn(`[EngagementAuthGuard] The resolved guard did not attach a user to request.user`);
@@ -45,3 +41,4 @@ exports.EngagementAuthGuard = EngagementAuthGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.ModuleRef])
 ], EngagementAuthGuard);
+//# sourceMappingURL=auth.guard.js.map

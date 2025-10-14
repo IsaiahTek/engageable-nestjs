@@ -12,7 +12,7 @@ export declare class EngagementController {
     private readonly AuthGuard;
     constructor(service: EngagementService, actionService: EngagementActionService, commentService: CommentService, likeService: LikeService, AuthGuard: any);
     private checkIsRegisteredRoute;
-    getTarget(targetType: string, targetId: string): Promise<import("../entities/engagement-target.entity").EngagementTarget | null>;
+    getTarget(targetType: string, targetId: string): Promise<import("../entities/engagement-target.entity").EngagementTarget>;
     getTargets(): Promise<any[]>;
     getAllComments(): Promise<import("../entities/comment.entity").Comment[]>;
     getAllLikes(action: EngagementActionType): Promise<import("../entities/engagement-action.entity").EngagementAction[]>;

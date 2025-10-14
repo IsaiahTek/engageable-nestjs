@@ -24,3 +24,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CommentDto.prototype, "comment", void 0);
+//# sourceMappingURL=comment.dto.js.map

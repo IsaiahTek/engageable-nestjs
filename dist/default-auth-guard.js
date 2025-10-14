@@ -9,9 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultEngagementAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 let DefaultEngagementAuthGuard = class DefaultEngagementAuthGuard {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     canActivate(context) {
-        // Default behavior if developer didn’t specify any guard
         return true;
     }
 };
@@ -19,3 +17,4 @@ exports.DefaultEngagementAuthGuard = DefaultEngagementAuthGuard;
 exports.DefaultEngagementAuthGuard = DefaultEngagementAuthGuard = __decorate([
     (0, common_1.Injectable)()
 ], DefaultEngagementAuthGuard);
+//# sourceMappingURL=default-auth-guard.js.map

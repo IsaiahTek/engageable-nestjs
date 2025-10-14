@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Comment = void 0;
-// comment.entity.ts
 const typeorm_1 = require("typeorm");
 const engagement_target_entity_1 = require("./engagement-target.entity");
 const base_entity_1 = require("./base/base.entity");
@@ -60,3 +59,4 @@ __decorate([
 exports.Comment = Comment = __decorate([
     (0, typeorm_1.Entity)('comments')
 ], Comment);
+//# sourceMappingURL=comment.entity.js.map

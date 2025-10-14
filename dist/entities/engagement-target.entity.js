@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementTarget = void 0;
-// engagement-target.entity.ts
 const typeorm_1 = require("typeorm");
 const like_entity_1 = require("./like.entity");
 const comment_entity_1 = require("./comment.entity");
@@ -45,3 +44,4 @@ exports.EngagementTarget = EngagementTarget = __decorate([
     (0, typeorm_1.Entity)('engagement_targets'),
     (0, typeorm_1.Unique)(['targetType', 'targetId'])
 ], EngagementTarget);
+//# sourceMappingURL=engagement-target.entity.js.map

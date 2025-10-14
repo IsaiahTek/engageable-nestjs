@@ -34,3 +34,4 @@ function registerUserRelation(userEntity) {
         isLazy: false,
     });
 }
+//# sourceMappingURL=register-user-relation.js.map

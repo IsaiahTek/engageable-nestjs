@@ -53,7 +53,6 @@ let LikeService = class LikeService extends engagement_service_1.EngagementServi
             return await this._toggleLike(user, target.targetType, target.targetId);
         }
         else {
-            // Anonymous engagement
             return await this._toggleLike(null, target.targetType, target.targetId);
         }
     }
@@ -111,3 +110,4 @@ exports.LikeService = LikeService = __decorate([
         typeorm_1.Repository, Object, Object, engagement_emitter_1.EngagementEmitter,
         typeorm_1.Repository])
 ], LikeService);
+//# sourceMappingURL=like.service.js.map

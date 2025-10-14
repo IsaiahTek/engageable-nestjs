@@ -12,7 +12,7 @@ export declare class EngagementService {
     get hasUserSupport(): boolean;
     ensureTarget(targetType: string, targetId: string): Promise<EngagementTarget>;
     deleteTarget(targetType: string, targetId: string): Promise<EngagementTarget>;
-    getTarget(targetType: string, targetId: string): Promise<EngagementTarget | null>;
+    getTarget(targetType: string, targetId: string): Promise<EngagementTarget>;
     getTargets(): Promise<any[]>;
     deleteTargets(): Promise<import("typeorm").DeleteResult>;
 }

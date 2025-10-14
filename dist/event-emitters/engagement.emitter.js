@@ -33,3 +33,4 @@ exports.EngagementEmitter = EngagementEmitter = __decorate([
     __param(0, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
     __metadata("design:paramtypes", [Object, event_emitter_1.EventEmitter2])
 ], EngagementEmitter);
+//# sourceMappingURL=engagement.emitter.js.map
