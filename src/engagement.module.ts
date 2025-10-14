@@ -1,8 +1,8 @@
 // src/engagement.module.ts
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EngagementService } from './service/engagement.service';
-import { CommentService } from './service/comment.service';
+import { EngagementService } from './services/engagement.service';
+import { CommentService } from './services/comment.service';
 import { EngagementTarget } from './entities/engagement-target.entity';
 import { Comment } from './entities/comment.entity';
 import { EngagementController } from './controller/engagement.controller';
@@ -18,10 +18,10 @@ import { EngagementOptions } from './interfaces/engagement-options.interface';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EngagementEmitter } from './event-emitters/engagement.emitter';
 import { registerUserRelation } from './utils/register-user-relation';
-import { EngagementActionService } from './service/engagement-action.service';
+import { EngagementActionService } from './services/engagement-action.service';
 import { EngagementAction } from './entities/engagement-action.entity';
 import { Like } from './entities/like.entity';
-import { LikeService } from './service/like.service';
+import { LikeService } from './services/like.service';
 import { DefaultEngagementAuthGuard } from './default-auth-guard';
 
 @Module({})

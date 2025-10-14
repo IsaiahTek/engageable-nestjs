@@ -1,6 +1,4 @@
-# Don't publish development files
 node_modules
-src
 .env
 .env.*
 dist/**/*.spec.*
@@ -11,6 +9,3 @@ coverage
 *.log
 .DS_Store
 npm-debug.log*
-tsconfig.json
-tsconfig.build.json
-jest.config.js

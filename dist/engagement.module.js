@@ -10,8 +10,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const engagement_service_1 = require("./service/engagement.service");
-const comment_service_1 = require("./service/comment.service");
+const engagement_service_1 = require("./services/engagement.service");
+const comment_service_1 = require("./services/comment.service");
 const engagement_target_entity_1 = require("./entities/engagement-target.entity");
 const comment_entity_1 = require("./entities/comment.entity");
 const engagement_controller_1 = require("./controller/engagement.controller");
@@ -21,10 +21,10 @@ const constants_1 = require("./utils/constants");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const engagement_emitter_1 = require("./event-emitters/engagement.emitter");
 const register_user_relation_1 = require("./utils/register-user-relation");
-const engagement_action_service_1 = require("./service/engagement-action.service");
+const engagement_action_service_1 = require("./services/engagement-action.service");
 const engagement_action_entity_1 = require("./entities/engagement-action.entity");
 const like_entity_1 = require("./entities/like.entity");
-const like_service_1 = require("./service/like.service");
+const like_service_1 = require("./services/like.service");
 const default_auth_guard_1 = require("./default-auth-guard");
 let EngagementModule = EngagementModule_1 = class EngagementModule {
     static register(options) {

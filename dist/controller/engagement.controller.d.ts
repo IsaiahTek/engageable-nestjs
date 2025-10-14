@@ -1,9 +1,9 @@
-import { EngagementService } from '../service/engagement.service';
+import { EngagementService } from '../services/engagement.service';
 import { CommentDto } from '../dto/comment.dto';
-import { CommentService } from '../service/comment.service';
-import { EngagementActionService } from '../service/engagement-action.service';
+import { CommentService } from '../services/comment.service';
+import { EngagementActionService } from '../services/engagement-action.service';
 import { EngagementActionType } from '../interfaces/user_entity.type';
-import { LikeService } from '../service/like.service';
+import { LikeService } from '../services/like.service';
 export declare class EngagementController {
     private readonly service;
     private readonly actionService;
@@ -12,20 +12,20 @@ export declare class EngagementController {
     private readonly AuthGuard;
     constructor(service: EngagementService, actionService: EngagementActionService, commentService: CommentService, likeService: LikeService, AuthGuard: any);
     private checkIsRegisteredRoute;
-    getTarget(targetType: string, targetId: string): Promise<import("../entities/engagement-target.entity").EngagementTarget>;
+    getTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
     getTargets(): Promise<any[]>;
-    getAllComments(): Promise<import("../entities/comment.entity").Comment[]>;
-    getAllLikes(action: EngagementActionType): Promise<import("../entities/engagement-action.entity").EngagementAction[]>;
-    deleteTarget(targetType: string, targetId: string): Promise<import("../entities/engagement-target.entity").EngagementTarget>;
+    getAllComments(): Promise<import("..").Comment[]>;
+    getAllLikes(action: EngagementActionType): Promise<import("..").EngagementAction[]>;
+    deleteTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
     deleteTargets(): Promise<import("typeorm").DeleteResult>;
     countLikes(targetType: string, targetId: string): Promise<{
         count: number;
     }>;
-    addLike(targetType: string, targetId: string, req: any): Promise<import("../entities/like.entity").Like>;
-    addComment(targetType: string, targetId: string, commentDto: CommentDto, req: any): Promise<import("../entities/comment.entity").Comment>;
-    getComments(targetType: string, targetId: string): Promise<import("../entities/comment.entity").Comment[]>;
+    addLike(targetType: string, targetId: string, req: any): Promise<import("..").Like>;
+    addComment(targetType: string, targetId: string, commentDto: CommentDto, req: any): Promise<import("..").Comment>;
+    getComments(targetType: string, targetId: string): Promise<import("..").Comment[]>;
     deleteLike(targetType: string, targetId: string, commentId: string): Promise<void>;
-    updateComment(targetType: string, targetId: string, commentId: string, commentDto: CommentDto): Promise<import("../entities/comment.entity").Comment>;
+    updateComment(targetType: string, targetId: string, commentId: string, commentDto: CommentDto): Promise<import("..").Comment>;
     countActions(targetType: string, targetId: string, action: EngagementActionType): Promise<{
         count: number;
     }>;
@@ -35,7 +35,7 @@ export declare class EngagementController {
         action?: undefined;
     } | {
         created: boolean;
-        action: import("../entities/engagement-action.entity").EngagementAction;
+        action: import("..").EngagementAction;
         removed?: undefined;
     }>;
 }

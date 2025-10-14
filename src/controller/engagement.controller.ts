@@ -11,14 +11,14 @@ import {
   Put,
   Inject,
 } from '@nestjs/common';
-import { EngagementService } from '../service/engagement.service';
+import { EngagementService } from '../services/engagement.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { EngagementRegistry } from '../registry/engagement.registry';
 import { CommentDto } from '../dto/comment.dto';
-import { CommentService } from '../service/comment.service';
-import { EngagementActionService } from '../service/engagement-action.service';
+import { CommentService } from '../services/comment.service';
+import { EngagementActionService } from '../services/engagement-action.service';
 import { EngagementActionType } from '../interfaces/user_entity.type';
-import { LikeService } from '../service/like.service';
+import { LikeService } from '../services/like.service';
 import { AUTH_GUARD_KEY } from '../utils/constants';
 import { UseEngagementAuth } from '../decorators/auth.decorator';
 
