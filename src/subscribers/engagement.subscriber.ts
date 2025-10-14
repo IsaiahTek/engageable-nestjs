@@ -13,8 +13,10 @@ import { EngagementEvent } from '../utils/enums';
 @Injectable()
 export class EngagementSubscriber implements EntitySubscriberInterface<any> {
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
-    @Inject(EngagementOptionsKey) private options: EngagementOptions,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+    @Inject(EngagementOptionsKey)
+    private options: EngagementOptions,
     private readonly engagementEmitter: EngagementEmitter,
   ) {
     this.dataSource.subscribers.push(this);

@@ -164,7 +164,7 @@ export class EngagementService {
             }
           } catch (err) {
             console.warn(
-              `⚠️ Failed to unlink ${typeName} (${target.targetId}): ${err.message}`,
+              `⚠️ Failed to unlink ${typeName} (${target.targetId}): ${(err as Error).message}`,
             );
           }
         }

@@ -76,7 +76,7 @@ export class CommentService extends EngagementService {
     });
   }
 
-  private async buildCommentTree(comment: Comment) {
+  private async buildCommentTree(comment: Comment) : Promise<Comment> {
     const replies = await this.commentRepo.find({
       where: { parent: comment },
       relations: ['user', 'likes'],

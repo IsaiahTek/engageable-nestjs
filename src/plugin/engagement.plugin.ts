@@ -1,8 +1,8 @@
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In, ObjectLiteral, Repository } from 'typeorm';
 import { EngagementTarget } from '../entities/engagement-target.entity';
 import { nestEngagements } from '../utils/nest-engagements.util';
 
-interface GetEngageablesOptions<T> {
+interface GetEngageablesOptions<T extends ObjectLiteral> {
   rootType: string; // e.g. 'fundraiser', 'post'
   repository: Repository<T>; // external repo (e.g. fundraiserRepository)
   dataSource: DataSource; // plugin's data source instance
@@ -15,7 +15,7 @@ interface GetEngageablesOptions<T> {
  * Public static API users can call to get paginated engageables with engagements.
  */
 export class EngageablePlugin {
-  static async getEngageablesWithEngagements<T>({
+  static async getEngageablesWithEngagements<T extends ObjectLiteral>({
     rootType,
     repository,
     dataSource,
@@ -142,7 +142,7 @@ async function buildNestedEngagements(
  * Main utility for plugin users to fetch entities with fully nested engagement data.
  */
 export async function getEngagedEntities<
-  T extends { id: string; engagement: EngagementTarget },
+  T extends { id: string; engagement: EngagementTarget | null },
 >(
   dataSource: DataSource,
   entityRepo: Repository<T>,
@@ -194,8 +194,7 @@ export async function getEngagedEntities<
 
   // Step 4: Merge into the main entities
   const merged = entities.map((entity) => {
-    entity.engagement =
-      rootTargets.find((t) => t.targetId === entity.id) || null;
+    entity.engagement = rootTargets.find((t) => t.targetId === entity.id) || null;
     return entity;
   });
 

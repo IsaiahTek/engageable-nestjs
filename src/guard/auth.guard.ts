@@ -21,7 +21,7 @@ export class EngagementAuthGuard implements CanActivate {
       }
     }
 
-    const result = await Promise.resolve(this.resolvedGuard.canActivate(context));
+    const result = await Promise.resolve(this.resolvedGuard?.canActivate(context));
 
     // Ensure the guard actually attached a user to the request
     const request = context.switchToHttp().getRequest();

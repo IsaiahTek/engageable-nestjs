@@ -1,12 +1,53 @@
 {
   "name": "engageably-nest",
   "version": "1.0.0",
-  "description": "A NestJS plugin for adding engagement (likes, comments, repost, bookmark, etc) to entities.",
+  "description": "A NestJS plugin for adding engagement (likes, comments, reposts, bookmarks, etc.) to entities.",
   "main": "dist/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "nestjs",
+    "plugin",
+    "engagement",
+    "likes",
+    "comments",
+    "reposts",
+    "bookmarks"
+  ],
+  "author": "Engr. Isaiah Pius E. <isaiahtech1@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IsaiahTek/engageable.git"
   },
-  "keywords": [ "nestjs", "plugin", "engagement", "likes", "comments", "reposts", "bookmarks" ],
-  "author": "Engr., Isaiah Pius E. <isaiahtech1@gmail.com>",
-  "license": "MIT"
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/typeorm": "^10.0.0",
+    "typeorm": "^0.3.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/mapped-types": "^2.0.4",
+    "@nestjs/swagger": "^7.3.1",
+    "@nestjs/typeorm": "^10.0.0",
+    "@types/node": "^24.7.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "reflect-metadata": "^0.2.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

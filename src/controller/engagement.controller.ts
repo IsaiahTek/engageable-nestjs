@@ -111,7 +111,7 @@ export class EngagementController {
     @Param('targetType') targetType: string,
     @Param('targetId') targetId: string,
     @Body() commentDto: CommentDto,
-    @Request() req,
+    @Request() req: any,
   ) {
     this.checkIsRegisteredRoute(targetType);
     return this.commentService.addComment(
@@ -177,7 +177,7 @@ export class EngagementController {
     @Param('targetType') targetType: string,
     @Param('targetId') targetId: string,
     @Param('action') action: EngagementActionType,
-    @Request() req,
+    @Request() req: any,
   ) {
     this.checkIsRegisteredRoute(targetType);
     return this.actionService.toggleAction(

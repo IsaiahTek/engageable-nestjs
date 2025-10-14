@@ -4,7 +4,9 @@ import { UserEntityKey, EngagementOptionsKey } from '../utils/constants';
 
 export class BaseService {
   constructor(
-    @Inject(UserEntityKey) protected readonly userEntity: any,
-    @Inject(EngagementOptionsKey) protected options: EngagementOptions,
+    @Inject(UserEntityKey)
+    protected readonly userEntity: any,
+    @Inject(EngagementOptionsKey)
+    protected options: EngagementOptions,
   ) {}
 }
