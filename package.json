@@ -1,0 +1,12 @@
+{
+  "name": "engageably-nest",
+  "version": "1.0.0",
+  "description": "A NestJS plugin for adding engagement (likes, comments, repost, bookmark, etc) to entities.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [ "nestjs", "plugin", "engagement", "likes", "comments", "reposts", "bookmarks" ],
+  "author": "Engr., Isaiah Pius E. <isaiahtech1@gmail.com>",
+  "license": "MIT"
+}
