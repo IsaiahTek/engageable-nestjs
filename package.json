@@ -1,5 +1,5 @@
 {
-  "name": "engageable-nest",
+  "name": "engageable-nestjs",
   "version": "1.0.0",
   "description": "A NestJS plugin for adding engagement (likes, comments, reposts, bookmarks, etc.) to entities.",
   "main": "dist/index.js",
