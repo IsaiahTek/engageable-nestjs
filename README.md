@@ -1,4 +1,4 @@
-# 🚀 engageable for NestJS
+# Engageable for NestJS
 
 **engageable** is a powerful, plug-and-play **NestJS engagement plugin** that adds social interaction features like **likes**, **comments**, **bookmarks**, **reposts**, and more — to any entity in your application.
 
@@ -6,7 +6,7 @@ Built with **TypeORM** and **NestJS best practices**, engageable makes it easy t
 
 ---
 
-## 🧩 Features
+## Features
 
 - ✅ **Drop-in Engagement System** — Easily attach likes, comments, bookmarks, and reposts to any entity.
 - ✅ **Modular NestJS Plugin** — Import as a Nest module or apply via decorators.
@@ -16,14 +16,14 @@ Built with **TypeORM** and **NestJS best practices**, engageable makes it easy t
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 # with npm
-npm install engageable-nest
+npm install engageable-nestjs
 
 # or with yarn
-yarn add engageable-nest
+yarn add engageable-nestjs
 
 npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
 ```
@@ -33,7 +33,7 @@ npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
 ```javascript
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { engageableModule } from 'engageable-nest';
+import { engageableModule } from 'engageable-nestjs';
 
 @Module({
   imports: [
@@ -50,7 +50,7 @@ export class AppModule {}
 
 ```javascript
 import { Entity, Column } from 'typeorm';
-import { Engageable } from 'engageable-nest';
+import { Engageable } from 'engageable-nestjs';
 
 @Entity()
 @Engageable()
