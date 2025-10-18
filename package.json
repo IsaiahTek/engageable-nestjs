@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/IsaiahTek/engageable.git"
+    "url": "git+https://github.com/IsaiahTek/engageable.git"
   },
   "scripts": {
     "build": "tsc",
@@ -28,16 +28,14 @@
     "@nestjs/common": "^10.0.0 || ^11.0.0",
     "@nestjs/core": "^10.0.0 || ^11.0.0",
     "@nestjs/event-emitter": "^3.0.1",
-    "@nestjs/typeorm": "^10.0.0 || ^11.0.0",
-    "typeorm": "^0.3.0"
+    "@nestjs/typeorm": "^11.0.0",
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/typeorm": "^11.0.0",
+    "typeorm": "^0.3.27",
     "@nestjs/mapped-types": "^2.0.4",
     "@nestjs/swagger": "^11.2.0",
-    "@nestjs/typeorm": "^11.0.0",
     "@types/node": "^24.7.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -49,5 +47,9 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/IsaiahTek/engageable/issues"
+  },
+  "homepage": "https://github.com/IsaiahTek/engageable#readme"
 }
