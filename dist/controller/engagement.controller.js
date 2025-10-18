@@ -24,8 +24,8 @@ const user_entity_type_1 = require("../interfaces/user_entity.type");
 const like_service_1 = require("../services/like.service");
 const constants_1 = require("../utils/constants");
 const auth_decorator_1 = require("../decorators/auth.decorator");
-const review_service_1 = require("src/services/review.service");
-const review_dto_1 = require("src/dto/review.dto");
+const review_service_1 = require("../services/review.service");
+const review_dto_1 = require("../dto/review.dto");
 let EngagementController = class EngagementController {
     constructor(service, actionService, commentService, likeService, reviewService, AuthGuard) {
         this.service = service;

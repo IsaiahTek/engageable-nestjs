@@ -21,8 +21,8 @@ import { EngagementActionType } from '../interfaces/user_entity.type';
 import { LikeService } from '../services/like.service';
 import { AUTH_GUARD_KEY } from '../utils/constants';
 import { UseEngagementAuth } from '../decorators/auth.decorator';
-import { ReviewService } from 'src/services/review.service';
-import { ReviewDto } from 'src/dto/review.dto';
+import { ReviewService } from '../services/review.service';
+import { ReviewDto } from '../dto/review.dto';
 
 @ApiTags('Engagement')
 @Controller({ path: 'engagement', version: '1' })
