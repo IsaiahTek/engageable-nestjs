@@ -16,12 +16,12 @@ exports.ReviewService = void 0;
 const common_1 = require("@nestjs/common");
 const engagement_service_1 = require("./engagement.service");
 const typeorm_1 = require("@nestjs/typeorm");
-const engagement_target_entity_1 = require("src/entities/engagement-target.entity");
-const engagement_emitter_1 = require("src/event-emitters/engagement.emitter");
-const constants_1 = require("src/utils/constants");
+const engagement_target_entity_1 = require("../entities/engagement-target.entity");
+const engagement_emitter_1 = require("../event-emitters/engagement.emitter");
+const constants_1 = require("../utils/constants");
 const typeorm_2 = require("typeorm");
-const review_entity_1 = require("src/entities/review.entity");
-const enums_1 = require("src/utils/enums");
+const review_entity_1 = require("../entities/review.entity");
+const enums_1 = require("../utils/enums");
 let ReviewService = class ReviewService extends engagement_service_1.EngagementService {
     constructor(dataSource, targetRepo, userEntity, options, engagementEmitter, reviewRepo) {
         super(dataSource, targetRepo, userEntity, options, engagementEmitter);

@@ -1,14 +1,14 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { EngagementService } from "./engagement.service";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { EngagementTarget } from "src/entities/engagement-target.entity";
-import { EngagementEmitter } from "src/event-emitters/engagement.emitter";
-import { EngagementOptions } from "src/interfaces/engagement-options.interface";
-import { UserEntityKey, EngagementOptionsKey } from "src/utils/constants";
+import { EngagementTarget } from "../entities/engagement-target.entity";
+import { EngagementEmitter } from "../event-emitters/engagement.emitter";
+import { EngagementOptions } from "../interfaces/engagement-options.interface";
+import { UserEntityKey, EngagementOptionsKey } from "../utils/constants";
 import { DataSource, Repository } from "typeorm";
-import { Review } from "src/entities/review.entity";
-import { EngagementEvent } from "src/utils/enums";
-import { ReviewDto } from "src/dto/review.dto";
+import { Review } from "../entities/review.entity";
+import { EngagementEvent } from "../utils/enums";
+import { ReviewDto } from "../dto/review.dto";
 
 @Injectable()
 export class ReviewService extends EngagementService {

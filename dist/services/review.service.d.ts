@@ -1,10 +1,10 @@
 import { EngagementService } from "./engagement.service";
-import { EngagementTarget } from "src/entities/engagement-target.entity";
-import { EngagementEmitter } from "src/event-emitters/engagement.emitter";
-import { EngagementOptions } from "src/interfaces/engagement-options.interface";
+import { EngagementTarget } from "../entities/engagement-target.entity";
+import { EngagementEmitter } from "../event-emitters/engagement.emitter";
+import { EngagementOptions } from "../interfaces/engagement-options.interface";
 import { DataSource, Repository } from "typeorm";
-import { Review } from "src/entities/review.entity";
-import { ReviewDto } from "src/dto/review.dto";
+import { Review } from "../entities/review.entity";
+import { ReviewDto } from "../dto/review.dto";
 export declare class ReviewService extends EngagementService {
     protected readonly dataSource: DataSource;
     protected targetRepo: Repository<EngagementTarget>;
