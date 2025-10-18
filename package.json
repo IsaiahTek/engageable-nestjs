@@ -1,7 +1,7 @@
 {
   "name": "engageable-nestjs",
   "version": "1.0.0",
-  "description": "A NestJS plugin for adding engagement (likes, comments, reposts, bookmarks, etc.) to entities.",
+  "description": "An engagement library/plugin for adding engagement (likes, comments, reposts, bookmarks, etc.) to entities in a NestJS application.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [

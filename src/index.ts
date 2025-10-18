@@ -7,10 +7,12 @@ export * from './services/engagement.service';
 export * from './services/engagement-action.service';
 export * from './services/comment.service';
 export * from './services/like.service';
+export * from './services/review.service';
 export * from './entities/engagement-action.entity';
 export * from './entities/comment.entity';
 export * from './entities/engagement-target.entity';
 export * from './entities/like.entity';
+export * from './entities/review.entity';
 // ... any other public components
 
 // Example: Re-export the plugin
