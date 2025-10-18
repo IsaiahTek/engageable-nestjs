@@ -5,6 +5,7 @@ const typeorm_1 = require("typeorm");
 const like_entity_1 = require("../entities/like.entity");
 const comment_entity_1 = require("../entities/comment.entity");
 const engagement_action_entity_1 = require("../entities/engagement-action.entity");
+const review_entity_1 = require("../entities/review.entity");
 function registerUserRelation(userEntity) {
     if (!userEntity)
         return;
@@ -27,6 +28,14 @@ function registerUserRelation(userEntity) {
     });
     storage.relations.push({
         target: comment_entity_1.Comment,
+        propertyName: 'user',
+        relationType: 'many-to-one',
+        type: () => userEntity,
+        options: { onDelete: 'CASCADE', nullable: true, eager: true },
+        isLazy: false,
+    });
+    storage.relations.push({
+        target: review_entity_1.Review,
         propertyName: 'user',
         relationType: 'many-to-one',
         type: () => userEntity,

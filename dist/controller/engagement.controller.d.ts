@@ -18,6 +18,7 @@ export declare class EngagementController {
     getTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
     getTargets(): Promise<any[]>;
     getAllComments(): Promise<import("..").Comment[]>;
+    getAllRevies(): Promise<import("..").Review[]>;
     getAllLikes(action: EngagementActionType): Promise<import("..").EngagementAction[]>;
     deleteTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
     deleteTargets(): Promise<import("typeorm").DeleteResult>;

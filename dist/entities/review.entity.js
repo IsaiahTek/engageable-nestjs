@@ -21,7 +21,7 @@ __decorate([
     __metadata("design:type", String)
 ], Review.prototype, "text", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], Review.prototype, "rating", void 0);
 __decorate([

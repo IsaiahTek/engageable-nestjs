@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Double, Entity, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base/base.entity";
 import { EngagementTarget } from "./engagement-target.entity";
 
@@ -8,7 +8,7 @@ export class Review extends BaseEntity {
     @Column()
     text: string;
 
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
     rating: number;
 
     @Column()

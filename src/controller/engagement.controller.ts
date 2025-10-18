@@ -63,6 +63,11 @@ export class EngagementController {
     return this.commentService.getAllComments();
   }
 
+  @Get('/reviews')
+  async getAllRevies(){
+    return this.reviewService.getAllReviews();
+  }
+
   @Get('/:action')
   @ApiProperty({ enum: EngagementActionType })
   async getAllLikes(@Param('action') action: EngagementActionType) {

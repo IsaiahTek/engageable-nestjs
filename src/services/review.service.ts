@@ -26,10 +26,14 @@ export class ReviewService extends EngagementService {
     }
 
     async getAllReviews() {
-        return this.reviewRepo.find({
+        console.log("Trying to fetch reviews")
+        const result = await this.reviewRepo.find({
             relations: ['user'],
             order: { createdAt: 'DESC' },
         });
+
+        console.log("Reviews: ", result);
+        return result;
     }
 
     async addReview(userId: any, targetType: string, targetId: string, review: ReviewDto) {

@@ -50,6 +50,9 @@ let EngagementController = class EngagementController {
     async getAllComments() {
         return this.commentService.getAllComments();
     }
+    async getAllRevies() {
+        return this.reviewService.getAllReviews();
+    }
     async getAllLikes(action) {
         console.log(action);
         return this.actionService.getAllActions(action);
@@ -138,6 +141,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "getAllComments", null);
+__decorate([
+    (0, common_1.Get)('/reviews'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "getAllRevies", null);
 __decorate([
     (0, common_1.Get)('/:action'),
     (0, swagger_1.ApiProperty)({ enum: user_entity_type_1.EngagementActionType }),

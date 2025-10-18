@@ -33,10 +33,13 @@ let ReviewService = class ReviewService extends engagement_service_1.EngagementS
         this.reviewRepo = reviewRepo;
     }
     async getAllReviews() {
-        return this.reviewRepo.find({
+        console.log("Trying to fetch reviews");
+        const result = await this.reviewRepo.find({
             relations: ['user'],
             order: { createdAt: 'DESC' },
         });
+        console.log("Reviews: ", result);
+        return result;
     }
     async addReview(userId, targetType, targetId, review) {
         return this._addReview(userId, targetType, targetId, review);
