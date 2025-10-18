@@ -108,6 +108,9 @@ export class CommentService extends EngagementService {
       targetType: targetType,
       content,
     });
+    this.engagementEmitter.emit(EngagementEvent.COMMENT_CREATED, {
+      comment,
+    })
     return this.commentRepo.save(comment);
   }
 

@@ -24,12 +24,15 @@ const user_entity_type_1 = require("../interfaces/user_entity.type");
 const like_service_1 = require("../services/like.service");
 const constants_1 = require("../utils/constants");
 const auth_decorator_1 = require("../decorators/auth.decorator");
+const review_service_1 = require("src/services/review.service");
+const review_dto_1 = require("src/dto/review.dto");
 let EngagementController = class EngagementController {
-    constructor(service, actionService, commentService, likeService, AuthGuard) {
+    constructor(service, actionService, commentService, likeService, reviewService, AuthGuard) {
         this.service = service;
         this.actionService = actionService;
         this.commentService = commentService;
         this.likeService = likeService;
+        this.reviewService = reviewService;
         this.AuthGuard = AuthGuard;
     }
     checkIsRegisteredRoute(targetType) {
@@ -85,6 +88,22 @@ let EngagementController = class EngagementController {
     async updateComment(targetType, targetId, commentId, commentDto) {
         this.checkIsRegisteredRoute(targetType);
         return this.commentService.updateComment(commentId, commentDto.comment);
+    }
+    async getReviews(targetType, targetId) {
+        this.checkIsRegisteredRoute(targetType);
+        return this.reviewService.getReviews(targetType, targetId);
+    }
+    async addReview(targetType, targetId, reviewDto, req) {
+        this.checkIsRegisteredRoute(targetType);
+        return this.reviewService.addReview(req.user, targetType, targetId, reviewDto);
+    }
+    async updateReview(targetType, targetId, reviewId, reviewDto) {
+        this.checkIsRegisteredRoute(targetType);
+        return this.reviewService.updateReview(reviewId, reviewDto);
+    }
+    async deleteReview(targetType, targetId, reviewId) {
+        this.checkIsRegisteredRoute(targetType);
+        return this.reviewService.deleteReview(reviewId);
     }
     async countActions(targetType, targetId, action) {
         console.log(action);
@@ -200,6 +219,44 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "updateComment", null);
 __decorate([
+    (0, common_1.Get)(':targetType/:targetId/reviews'),
+    __param(0, (0, common_1.Param)('targetType')),
+    __param(1, (0, common_1.Param)('targetId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "getReviews", null);
+__decorate([
+    (0, auth_decorator_1.UseEngagementAuth)(),
+    (0, common_1.Post)(':targetType/:targetId/review'),
+    __param(0, (0, common_1.Param)('targetType')),
+    __param(1, (0, common_1.Param)('targetId')),
+    __param(2, (0, common_1.Body)()),
+    __param(3, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, review_dto_1.ReviewDto, Object]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "addReview", null);
+__decorate([
+    (0, common_1.Put)(':targetType/:targetId/review/:reviewId'),
+    __param(0, (0, common_1.Param)('targetType')),
+    __param(1, (0, common_1.Param)('targetId')),
+    __param(2, (0, common_1.Param)('reviewId')),
+    __param(3, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, review_dto_1.ReviewDto]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "updateReview", null);
+__decorate([
+    (0, common_1.Delete)(':targetType/:targetId/review/:reviewId'),
+    __param(0, (0, common_1.Param)('targetType')),
+    __param(1, (0, common_1.Param)('targetId')),
+    __param(2, (0, common_1.Param)('reviewId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "deleteReview", null);
+__decorate([
     (0, common_1.Get)(':targetType/:targetId/action/:action' + 's'),
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
@@ -222,10 +279,11 @@ __decorate([
 exports.EngagementController = EngagementController = __decorate([
     (0, swagger_1.ApiTags)('Engagement'),
     (0, common_1.Controller)({ path: 'engagement', version: '1' }),
-    __param(4, (0, common_1.Inject)(constants_1.AUTH_GUARD_KEY)),
+    __param(5, (0, common_1.Inject)(constants_1.AUTH_GUARD_KEY)),
     __metadata("design:paramtypes", [engagement_service_1.EngagementService,
         engagement_action_service_1.EngagementActionService,
         comment_service_1.CommentService,
-        like_service_1.LikeService, Object])
+        like_service_1.LikeService,
+        review_service_1.ReviewService, Object])
 ], EngagementController);
 //# sourceMappingURL=engagement.controller.js.map

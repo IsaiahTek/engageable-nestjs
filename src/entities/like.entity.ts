@@ -4,11 +4,9 @@ import { EngagementTarget } from './engagement-target.entity';
 import { BaseEntity } from './base/base.entity';
 import { Comment } from './comment.entity';
 
-@Entity('likes')
+@Entity('engageable_likes')
 export class Like extends BaseEntity {
-  // @ManyToOne(() => User, (user) => user.likes, { onDelete: 'CASCADE' })
-  // user: User;
-
+  
   @Column({ nullable: true })
   userId: string;
 

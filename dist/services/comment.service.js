@@ -88,6 +88,9 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
             targetType: targetType,
             content,
         });
+        this.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_CREATED, {
+            comment,
+        });
         return this.commentRepo.save(comment);
     }
     async _getComments(targetType, targetId) {

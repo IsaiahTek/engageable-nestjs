@@ -57,6 +57,6 @@ __decorate([
     __metadata("design:type", Array)
 ], Comment.prototype, "likes", void 0);
 exports.Comment = Comment = __decorate([
-    (0, typeorm_1.Entity)('comments')
+    (0, typeorm_1.Entity)('engageable_comments')
 ], Comment);
 //# sourceMappingURL=comment.entity.js.map

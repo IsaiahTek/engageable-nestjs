@@ -4,7 +4,7 @@ import { EngagementTarget } from './engagement-target.entity';
 import { BaseEntity } from './base/base.entity';
 import { Like } from './like.entity';
 
-@Entity('comments')
+@Entity('engageable_comments')
 export class Comment extends BaseEntity {
   @Column('text')
   content: string;

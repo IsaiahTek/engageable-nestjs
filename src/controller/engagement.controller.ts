@@ -21,6 +21,8 @@ import { EngagementActionType } from '../interfaces/user_entity.type';
 import { LikeService } from '../services/like.service';
 import { AUTH_GUARD_KEY } from '../utils/constants';
 import { UseEngagementAuth } from '../decorators/auth.decorator';
+import { ReviewService } from 'src/services/review.service';
+import { ReviewDto } from 'src/dto/review.dto';
 
 @ApiTags('Engagement')
 @Controller({ path: 'engagement', version: '1' })
@@ -30,6 +32,7 @@ export class EngagementController {
     private readonly actionService: EngagementActionService,
     private readonly commentService: CommentService,
     private readonly likeService: LikeService,
+    private readonly reviewService: ReviewService,
     @Inject(AUTH_GUARD_KEY) private readonly AuthGuard: any,
   ) {}
 
@@ -153,6 +156,54 @@ export class EngagementController {
     this.checkIsRegisteredRoute(targetType);
     return this.commentService.updateComment(commentId, commentDto.comment);
   }
+
+  @Get(':targetType/:targetId/reviews')
+  async getReviews(
+    @Param('targetType') targetType: string,
+    @Param('targetId') targetId: string,
+  ) {
+    this.checkIsRegisteredRoute(targetType);
+    return this.reviewService.getReviews(targetType, targetId);
+  }
+
+  @UseEngagementAuth()
+  @Post(':targetType/:targetId/review')
+  async addReview(
+    @Param('targetType') targetType: string,
+    @Param('targetId') targetId: string,
+    @Body() reviewDto: ReviewDto,
+    @Request() req: any,
+  ) {
+    this.checkIsRegisteredRoute(targetType);
+    return this.reviewService.addReview(
+      req.user,
+      targetType,
+      targetId,
+      reviewDto,
+    );
+  }
+
+  @Put(':targetType/:targetId/review/:reviewId')
+  async updateReview(
+    @Param('targetType') targetType: string,
+    @Param('targetId') targetId: string,
+    @Param('reviewId') reviewId: string,
+    @Body() reviewDto: ReviewDto,
+  ) {
+    this.checkIsRegisteredRoute(targetType);
+    return this.reviewService.updateReview(reviewId, reviewDto);
+  }
+
+  @Delete(':targetType/:targetId/review/:reviewId')
+  async deleteReview(
+    @Param('targetType') targetType: string,
+    @Param('targetId') targetId: string,
+    @Param('reviewId') reviewId: string,
+  ) {
+    this.checkIsRegisteredRoute(targetType);
+    return this.reviewService.deleteReview(reviewId);
+  }
+  
 
   @Get(':targetType/:targetId/action/:action' + 's')
   async countActions(

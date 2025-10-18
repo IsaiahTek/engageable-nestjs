@@ -4,6 +4,7 @@ import { Like } from './like.entity';
 import { Comment } from './comment.entity';
 import { BaseEntity } from './base/base.entity';
 import { EngagementAction } from './engagement-action.entity';
+import { Review } from './review.entity';
 
 @Entity('engagement_targets')
 @Unique(['targetType', 'targetId'])
@@ -24,4 +25,8 @@ export class EngagementTarget extends BaseEntity {
     cascade: true,
   })
   actions: EngagementAction[];
+
+  @OneToMany(() => Review, (review) => review.engagement, { cascade: true })
+  reviews: Review[];
+
 }

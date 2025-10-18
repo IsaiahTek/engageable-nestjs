@@ -26,6 +26,7 @@ const engagement_action_entity_1 = require("./entities/engagement-action.entity"
 const like_entity_1 = require("./entities/like.entity");
 const like_service_1 = require("./services/like.service");
 const default_auth_guard_1 = require("./default-auth-guard");
+const review_entity_1 = require("./entities/review.entity");
 let EngagementModule = EngagementModule_1 = class EngagementModule {
     static register(options) {
         const imports = [
@@ -34,6 +35,7 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
                 engagement_action_entity_1.EngagementAction,
                 comment_entity_1.Comment,
                 like_entity_1.Like,
+                review_entity_1.Review,
             ]),
             event_emitter_1.EventEmitterModule.forRoot(),
         ];

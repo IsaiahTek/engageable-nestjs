@@ -5,5 +5,7 @@ export declare enum EngagementEvent {
     COMMENT_CREATED = "engagement.comment.created",
     COMMENT_DELETED = "engagement.comment.deleted",
     ACTION_CREATED = "engagement.action.created",
-    ACTION_DELETED = "engagement.action.deleted"
+    ACTION_DELETED = "engagement.action.deleted",
+    REVIEW_CREATED = "engagement.review.created",
+    REVIEW_DELETED = "engagement.review.deleted"
 }

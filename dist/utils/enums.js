@@ -11,5 +11,7 @@ var EngagementEvent;
     EngagementEvent["COMMENT_DELETED"] = "engagement.comment.deleted";
     EngagementEvent["ACTION_CREATED"] = "engagement.action.created";
     EngagementEvent["ACTION_DELETED"] = "engagement.action.deleted";
+    EngagementEvent["REVIEW_CREATED"] = "engagement.review.created";
+    EngagementEvent["REVIEW_DELETED"] = "engagement.review.deleted";
 })(EngagementEvent || (exports.EngagementEvent = EngagementEvent = {}));
 //# sourceMappingURL=enums.js.map

@@ -23,6 +23,7 @@ import { EngagementAction } from './entities/engagement-action.entity';
 import { Like } from './entities/like.entity';
 import { LikeService } from './services/like.service';
 import { DefaultEngagementAuthGuard } from './default-auth-guard';
+import { Review } from './entities/review.entity';
 
 @Module({})
 export class EngagementModule {
@@ -33,6 +34,7 @@ export class EngagementModule {
         EngagementAction,
         Comment,
         Like,
+        Review,
       ]),
       EventEmitterModule.forRoot(),
     ];

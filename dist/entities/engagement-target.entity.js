@@ -15,6 +15,7 @@ const like_entity_1 = require("./like.entity");
 const comment_entity_1 = require("./comment.entity");
 const base_entity_1 = require("./base/base.entity");
 const engagement_action_entity_1 = require("./engagement-action.entity");
+const review_entity_1 = require("./review.entity");
 let EngagementTarget = class EngagementTarget extends base_entity_1.BaseEntity {
 };
 exports.EngagementTarget = EngagementTarget;
@@ -40,6 +41,10 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], EngagementTarget.prototype, "actions", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => review_entity_1.Review, (review) => review.engagement, { cascade: true }),
+    __metadata("design:type", Array)
+], EngagementTarget.prototype, "reviews", void 0);
 exports.EngagementTarget = EngagementTarget = __decorate([
     (0, typeorm_1.Entity)('engagement_targets'),
     (0, typeorm_1.Unique)(['targetType', 'targetId'])
