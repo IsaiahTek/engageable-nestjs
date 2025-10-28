@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Comment = void 0;
 const typeorm_1 = require("typeorm");
-const engagement_target_entity_1 = require("./engagement-target.entity");
 const base_entity_1 = require("./base/base.entity");
 const like_entity_1 = require("./like.entity");
 let Comment = class Comment extends base_entity_1.BaseEntity {
@@ -33,12 +32,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Comment.prototype, "targetType", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => engagement_target_entity_1.EngagementTarget, (target) => target.comments, {
-        onDelete: 'CASCADE',
-    }),
-    __metadata("design:type", engagement_target_entity_1.EngagementTarget)
-], Comment.prototype, "engagement", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Comment, (comment) => comment.replies, {
         nullable: true,

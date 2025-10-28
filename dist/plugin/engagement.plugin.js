@@ -1,10 +1,50 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngageablePlugin = void 0;
-exports.getEngagedEntities = getEngagedEntities;
 const typeorm_1 = require("typeorm");
-const engagement_target_entity_1 = require("../entities/engagement-target.entity");
-const nest_engagements_util_1 = require("../utils/nest-engagements.util");
+const comment_entity_1 = require("../entities/comment.entity");
+const like_entity_1 = require("../entities/like.entity");
+const engagement_action_entity_1 = require("../entities/engagement-action.entity");
+async function getCommentReplies(commentRepo, commentId) {
+    const replies = await commentRepo.find({
+        where: { parent: { id: commentId } },
+        relations: ['user', 'likes', 'actions'],
+        order: { createdAt: 'DESC' },
+    });
+    for (const reply of replies) {
+        reply.replies = await getCommentReplies(commentRepo, reply.id);
+    }
+    return replies;
+}
+async function fetchAndStructureEngagements(dataSource, rootType, rootIds) {
+    const commentRepo = dataSource.getRepository(comment_entity_1.Comment);
+    const likeRepo = dataSource.getRepository(like_entity_1.Like);
+    const actionRepo = dataSource.getRepository(engagement_action_entity_1.EngagementAction);
+    const engagementMap = new Map();
+    rootIds.forEach(id => {
+        engagementMap.set(id, { comments: [], likes: [], actions: [] });
+    });
+    const likes = await likeRepo.find({
+        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds) },
+        relations: ['user'],
+    });
+    likes.forEach(like => engagementMap.get(like.targetId)?.likes.push(like));
+    const actions = await actionRepo.find({
+        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds) },
+        relations: ['user'],
+    });
+    actions.forEach(action => engagementMap.get(action.targetId)?.actions.push(action));
+    const rootComments = await commentRepo.find({
+        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds), parent: null },
+        relations: ['user', 'likes', 'actions'],
+        order: { createdAt: 'DESC' },
+    });
+    for (const rootComment of rootComments) {
+        rootComment.replies = await getCommentReplies(commentRepo, rootComment.id);
+        engagementMap.get(rootComment.targetId)?.comments.push(rootComment);
+    }
+    return engagementMap;
+}
 class EngageablePlugin {
     static async getEngageablesWithEngagements({ rootType, repository, dataSource, where = {}, pagination = { page: 1, limit: 10 }, transform, }) {
         const page = pagination.page || 1;
@@ -16,29 +56,13 @@ class EngageablePlugin {
             take: limit,
         });
         if (items.length === 0) {
-            return { data: [], total, page, limit };
+            return { data: [], total, page, limit, totalPages: 0 };
         }
-        const targetRepo = dataSource.getRepository(engagement_target_entity_1.EngagementTarget);
-        const allTargets = await targetRepo.find({
-            where: {
-                targetType: (0, typeorm_1.In)([rootType, 'comment']),
-            },
-            relations: [
-                'actions',
-                'likes',
-                'comments',
-                'comments.user',
-                'comments.likes',
-                'comments.replies',
-                'comments.replies.user',
-                'comments.replies.likes',
-            ],
-        });
+        const rootIds = items.map((item) => item.id);
+        const engagementMap = await fetchAndStructureEngagements(dataSource, rootType, rootIds);
         const data = items.map((item) => {
-            const target = allTargets.find((t) => t.targetType === rootType && t.targetId === item.id);
-            if (target) {
-                item.engagementTarget = (0, nest_engagements_util_1.nestEngagements)(target, allTargets);
-            }
+            const engagements = engagementMap.get(item.id) || { comments: [], likes: [], actions: [] };
+            item._engagements = engagements;
             return transform ? transform(item) : item;
         });
         return {
@@ -51,78 +75,4 @@ class EngageablePlugin {
     }
 }
 exports.EngageablePlugin = EngageablePlugin;
-async function buildNestedEngagements(dataSource, targets) {
-    const targetRepo = dataSource.getRepository(engagement_target_entity_1.EngagementTarget);
-    const commentIds = targets.flatMap((t) => t.comments?.map((c) => c.id) || []);
-    if (!commentIds.length)
-        return targets;
-    const commentTargets = await targetRepo.find({
-        where: { targetType: 'comment', targetId: (0, typeorm_1.In)(commentIds) },
-        relations: [
-            'actions',
-            'likes',
-            'comments',
-            'comments.user',
-            'comments.likes',
-            'comments.replies',
-            'comments.replies.user',
-            'comments.replies.likes',
-        ],
-    });
-    for (const target of targets) {
-        for (const comment of target.comments || []) {
-            const nestedTarget = commentTargets.find((ct) => ct.targetId === comment.id);
-            if (nestedTarget) {
-                comment.likes = nestedTarget.likes || [];
-                comment.replies = nestedTarget.comments || [];
-            }
-        }
-    }
-    if (commentTargets.length) {
-        await buildNestedEngagements(dataSource, commentTargets);
-    }
-    return targets;
-}
-async function getEngagedEntities(dataSource, entityRepo, targetType, options) {
-    const { where = {}, order = {}, page = 1, limit = 10 } = options || {};
-    const skip = (page - 1) * limit;
-    const [entities, total] = await entityRepo.findAndCount({
-        where,
-        order,
-        skip,
-        take: limit,
-    });
-    if (!entities.length) {
-        return { data: [], total, page, limit, totalPages: 0 };
-    }
-    const targetRepo = dataSource.getRepository(engagement_target_entity_1.EngagementTarget);
-    const rootTargets = await targetRepo.find({
-        where: entities.map((e) => ({
-            targetType,
-            targetId: e.id,
-        })),
-        relations: [
-            'actions',
-            'likes',
-            'comments',
-            'comments.user',
-            'comments.likes',
-            'comments.replies',
-            'comments.replies.user',
-            'comments.replies.likes',
-        ],
-    });
-    await buildNestedEngagements(dataSource, rootTargets);
-    const merged = entities.map((entity) => {
-        entity.engagement = rootTargets.find((t) => t.targetId === entity.id) || null;
-        return entity;
-    });
-    return {
-        data: merged,
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-    };
-}
 //# sourceMappingURL=engagement.plugin.js.map

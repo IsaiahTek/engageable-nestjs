@@ -16,17 +16,15 @@ exports.ReviewService = void 0;
 const common_1 = require("@nestjs/common");
 const engagement_service_1 = require("./engagement.service");
 const typeorm_1 = require("@nestjs/typeorm");
-const engagement_target_entity_1 = require("../entities/engagement-target.entity");
 const engagement_emitter_1 = require("../event-emitters/engagement.emitter");
 const constants_1 = require("../utils/constants");
 const typeorm_2 = require("typeorm");
 const review_entity_1 = require("../entities/review.entity");
 const enums_1 = require("../utils/enums");
 let ReviewService = class ReviewService extends engagement_service_1.EngagementService {
-    constructor(dataSource, targetRepo, userEntity, options, engagementEmitter, reviewRepo) {
-        super(dataSource, targetRepo, userEntity, options, engagementEmitter);
+    constructor(dataSource, userEntity, options, engagementEmitter, reviewRepo) {
+        super(dataSource, userEntity, options, engagementEmitter);
         this.dataSource = dataSource;
-        this.targetRepo = targetRepo;
         this.userEntity = userEntity;
         this.options = options;
         this.engagementEmitter = engagementEmitter;
@@ -42,28 +40,46 @@ let ReviewService = class ReviewService extends engagement_service_1.EngagementS
         return result;
     }
     async addReview(userId, targetType, targetId, review) {
-        return this._addReview(userId, targetType, targetId, review);
+        if (this.hasUserSupport && !this.options.allowAnonymous) {
+            if (!userId) {
+                throw new common_1.ForbiddenException('Authentication required to review');
+            }
+            const userRepo = this.dataSource.getRepository(this.userEntity);
+            const user = await userRepo.findOne({ where: { id: userId } });
+            if (!user) {
+                throw new common_1.NotFoundException('User not found');
+            }
+            return this._addReview({ user, targetType, targetId, review });
+        }
+        else {
+            return this._addReview({ user: null, targetType, targetId, review });
+        }
     }
-    async _addReview(userId, targetType, targetId, review) {
-        const target = await this.ensureTarget(targetType, targetId);
-        const reviewEntity = new review_entity_1.Review();
-        reviewEntity.text = review.text;
-        reviewEntity.rating = review.rating;
-        reviewEntity.user = userId;
-        reviewEntity.engagement = target;
-        const addedReview = await this.reviewRepo.save(reviewEntity);
+    async _addReview({ user, targetType, targetId, review }) {
+        console.log("About to add review: ", user, targetType, targetId, review);
+        const addedReview = this.reviewRepo.create({
+            text: review.text,
+            rating: review.rating,
+            user,
+            targetId: targetId,
+            targetType: targetType,
+        });
+        await this.reviewRepo.save(addedReview);
         this.engagementEmitter.emit(enums_1.EngagementEvent.REVIEW_CREATED, {
             review: addedReview,
         });
+        console.log("Added review: ", addedReview, user, targetType, targetId, review);
         return addedReview;
     }
     async getReviews(targetType, targetId) {
         return this._getReviews(targetType, targetId);
     }
     async _getReviews(targetType, targetId) {
-        const target = await this.ensureTarget(targetType, targetId);
         return this.reviewRepo.find({
-            where: { engagement: { id: target.id } },
+            where: {
+                targetType,
+                targetId
+            },
             relations: ['user'],
             order: { createdAt: 'DESC' },
         });
@@ -74,7 +90,9 @@ let ReviewService = class ReviewService extends engagement_service_1.EngagementS
         });
         if (!review)
             throw new common_1.NotFoundException('Review not found');
-        return this.reviewRepo.remove(review);
+        const result = await this.reviewRepo.remove(review);
+        this.engagementEmitter.emit(enums_1.EngagementEvent.REVIEW_DELETED, { reviewId });
+        return result;
     }
     async updateReview(reviewId, reviewDto) {
         const review = await this.reviewRepo.findOne({
@@ -91,12 +109,10 @@ exports.ReviewService = ReviewService;
 exports.ReviewService = ReviewService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectDataSource)()),
-    __param(1, (0, typeorm_1.InjectRepository)(engagement_target_entity_1.EngagementTarget)),
-    __param(2, (0, common_1.Inject)(constants_1.UserEntityKey)),
-    __param(3, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
-    __param(5, (0, typeorm_1.InjectRepository)(review_entity_1.Review)),
-    __metadata("design:paramtypes", [typeorm_2.DataSource,
-        typeorm_2.Repository, Object, Object, engagement_emitter_1.EngagementEmitter,
+    __param(1, (0, common_1.Inject)(constants_1.UserEntityKey)),
+    __param(2, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
+    __param(4, (0, typeorm_1.InjectRepository)(review_entity_1.Review)),
+    __metadata("design:paramtypes", [typeorm_2.DataSource, Object, Object, engagement_emitter_1.EngagementEmitter,
         typeorm_2.Repository])
 ], ReviewService);
 //# sourceMappingURL=review.service.js.map

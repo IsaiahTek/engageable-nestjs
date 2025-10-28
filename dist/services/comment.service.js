@@ -20,26 +20,43 @@ const engagement_emitter_1 = require("../event-emitters/engagement.emitter");
 const engagement_service_1 = require("./engagement.service");
 const typeorm_2 = require("@nestjs/typeorm");
 const enums_1 = require("../utils/enums");
-const engagement_target_entity_1 = require("../entities/engagement-target.entity");
 const constants_1 = require("../utils/constants");
 let CommentService = class CommentService extends engagement_service_1.EngagementService {
-    constructor(dataSource, targetRepo, userEntity, options, engagementEmitter, commentRepo) {
-        super(dataSource, targetRepo, userEntity, options, engagementEmitter);
+    constructor(dataSource, userEntity, options, engagementEmitter, commentRepo) {
+        super(dataSource, userEntity, options, engagementEmitter);
         this.dataSource = dataSource;
-        this.targetRepo = targetRepo;
         this.userEntity = userEntity;
         this.options = options;
         this.engagementEmitter = engagementEmitter;
         this.commentRepo = commentRepo;
     }
-    async addComment(user, targetType, targetId, content) {
-        const target = await this.ensureTarget(targetType, targetId);
-        return await this._addComment({
-            user,
-            targetType: target.targetType,
-            targetId: target.targetId,
-            content,
-        });
+    async addComment(userId, targetType, targetId, content, parentId) {
+        if (this.hasUserSupport && !this.options.allowAnonymous) {
+            if (!userId) {
+                throw new common_1.ForbiddenException('Authentication required to comment');
+            }
+            const userRepo = this.dataSource.getRepository(this.userEntity);
+            const user = await userRepo.findOne({ where: { id: userId } });
+            if (!user) {
+                throw new common_1.NotFoundException('User not found');
+            }
+            return await this._addComment({
+                user,
+                targetType: targetType,
+                targetId: targetId,
+                content,
+                parentId,
+            });
+        }
+        else {
+            return await this._addComment({
+                user: null,
+                targetType: targetType,
+                targetId: targetId,
+                content,
+                parentId,
+            });
+        }
     }
     async getComments(targetType, targetId) {
         return this._getComments(targetType, targetId);
@@ -69,7 +86,7 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
     }
     async buildCommentTree(comment) {
         const replies = await this.commentRepo.find({
-            where: { parent: comment },
+            where: { parent: { id: comment.id } },
             relations: ['user', 'likes'],
         });
         return {
@@ -77,16 +94,19 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
             replies: await Promise.all(replies.map((c) => this.buildCommentTree(c))),
         };
     }
-    async _addComment({ user, targetType, targetId, content, }) {
-        const target = await super.getTarget(targetType, targetId);
-        if (!target)
-            throw new common_1.NotFoundException('Target not found');
+    async _addComment({ user, targetType, targetId, content, parentId, }) {
+        let parentComment;
+        if (parentId) {
+            parentComment = await this.commentRepo.findOne({ where: { id: parentId } });
+            if (!parentComment)
+                throw new common_1.NotFoundException('Parent comment not found');
+        }
         const comment = this.commentRepo.create({
             user,
-            engagement: target,
-            targetId: target.id,
+            targetId: targetId,
             targetType: targetType,
             content,
+            parent: parentComment,
         });
         this.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_CREATED, {
             comment,
@@ -94,25 +114,20 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
         return this.commentRepo.save(comment);
     }
     async _getComments(targetType, targetId) {
-        const target = await super.targetRepo.findOne({
-            where: { targetType, targetId },
-            relations: ['comments'],
-        });
-        if (!target)
-            throw new common_1.NotFoundException('Target not found');
-        return this.commentRepo.find({
-            where: { engagement: target },
+        const rootComments = await this.commentRepo.find({
+            where: {
+                targetType,
+                targetId,
+                parent: null,
+            },
             relations: [
                 'user',
                 'likes',
                 'likes.user',
-                'replies',
-                'replies.user',
-                'replies.likes',
-                'replies.likes.user',
             ],
             order: { createdAt: 'DESC' },
         });
+        return Promise.all(rootComments.map(comment => this.buildCommentTree(comment)));
     }
     async _updateComment(commentId, content) {
         const comment = await this.commentRepo.findOne({
@@ -131,18 +146,17 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
             throw new common_1.NotFoundException('Comment not found');
         const result = this.commentRepo.remove(comment);
         super.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_DELETED, { result });
+        return result;
     }
 };
 exports.CommentService = CommentService;
 exports.CommentService = CommentService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectDataSource)()),
-    __param(1, (0, typeorm_2.InjectRepository)(engagement_target_entity_1.EngagementTarget)),
-    __param(2, (0, common_1.Inject)(constants_1.UserEntityKey)),
-    __param(3, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
-    __param(5, (0, typeorm_2.InjectRepository)(comment_entity_1.Comment)),
-    __metadata("design:paramtypes", [typeorm_1.DataSource,
-        typeorm_1.Repository, Object, Object, engagement_emitter_1.EngagementEmitter,
+    __param(1, (0, common_1.Inject)(constants_1.UserEntityKey)),
+    __param(2, (0, common_1.Inject)(constants_1.EngagementOptionsKey)),
+    __param(4, (0, typeorm_2.InjectRepository)(comment_entity_1.Comment)),
+    __metadata("design:paramtypes", [typeorm_1.DataSource, Object, Object, engagement_emitter_1.EngagementEmitter,
         typeorm_1.Repository])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

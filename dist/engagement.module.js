@@ -12,11 +12,9 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const engagement_service_1 = require("./services/engagement.service");
 const comment_service_1 = require("./services/comment.service");
-const engagement_target_entity_1 = require("./entities/engagement-target.entity");
 const comment_entity_1 = require("./entities/comment.entity");
 const engagement_controller_1 = require("./controller/engagement.controller");
 const engagement_registry_1 = require("./registry/engagement.registry");
-const engagement_subscriber_1 = require("./subscribers/engagement.subscriber");
 const constants_1 = require("./utils/constants");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const engagement_emitter_1 = require("./event-emitters/engagement.emitter");
@@ -32,7 +30,6 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
     static register(options) {
         const imports = [
             typeorm_1.TypeOrmModule.forFeature([
-                engagement_target_entity_1.EngagementTarget,
                 engagement_action_entity_1.EngagementAction,
                 comment_entity_1.Comment,
                 like_entity_1.Like,
@@ -58,7 +55,6 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
                 comment_service_1.CommentService,
                 like_service_1.LikeService,
                 review_service_1.ReviewService,
-                engagement_subscriber_1.EngagementSubscriber,
                 engagement_emitter_1.EngagementEmitter,
                 {
                     provide: constants_1.EngagementOptionsKey,

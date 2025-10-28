@@ -15,20 +15,16 @@ export declare class EngagementController {
     private readonly AuthGuard;
     constructor(service: EngagementService, actionService: EngagementActionService, commentService: CommentService, likeService: LikeService, reviewService: ReviewService, AuthGuard: any);
     private checkIsRegisteredRoute;
-    getTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
-    getTargets(): Promise<any[]>;
     getAllComments(): Promise<import("..").Comment[]>;
     getAllRevies(): Promise<import("..").Review[]>;
-    getAllLikes(action: EngagementActionType): Promise<import("..").EngagementAction[]>;
-    deleteTarget(targetType: string, targetId: string): Promise<import("..").EngagementTarget>;
-    deleteTargets(): Promise<import("typeorm").DeleteResult>;
+    getAllActions(action: EngagementActionType): Promise<import("..").EngagementAction[]>;
     countLikes(targetType: string, targetId: string): Promise<{
         count: number;
     }>;
-    addLike(targetType: string, targetId: string, req: any): Promise<import("..").Like>;
-    addComment(targetType: string, targetId: string, commentDto: CommentDto, req: any): Promise<import("..").Comment>;
+    toggleLike(targetType: string, targetId: string, req: any): Promise<import("..").Like>;
     getComments(targetType: string, targetId: string): Promise<import("..").Comment[]>;
-    deleteLike(targetType: string, targetId: string, commentId: string): Promise<void>;
+    addComment(targetType: string, targetId: string, commentDto: CommentDto, req: any): Promise<import("..").Comment>;
+    deleteComment(targetType: string, targetId: string, commentId: string): Promise<import("..").Comment>;
     updateComment(targetType: string, targetId: string, commentId: string, commentDto: CommentDto): Promise<import("..").Comment>;
     getReviews(targetType: string, targetId: string): Promise<import("..").Review[]>;
     addReview(targetType: string, targetId: string, reviewDto: ReviewDto, req: any): Promise<import("..").Review>;
@@ -37,7 +33,7 @@ export declare class EngagementController {
     countActions(targetType: string, targetId: string, action: EngagementActionType): Promise<{
         count: number;
     }>;
-    toggleLike(targetType: string, targetId: string, action: EngagementActionType, req: any): Promise<{
+    toggleAction(targetType: string, targetId: string, action: EngagementActionType, req: any): Promise<{
         removed: boolean;
         created?: undefined;
         action?: undefined;

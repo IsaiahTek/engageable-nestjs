@@ -1,6 +1,6 @@
 // comment.entity.ts
 import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
-import { EngagementTarget } from './engagement-target.entity';
+// import { EngagementTarget } from './engagement-target.entity';
 import { BaseEntity } from './base/base.entity';
 import { Like } from './like.entity';
 
@@ -18,19 +18,17 @@ export class Comment extends BaseEntity {
   @Column()
   targetType: string;
 
-  @ManyToOne(() => EngagementTarget, (target) => target.comments, {
-    onDelete: 'CASCADE',
-  })
-  engagement: EngagementTarget;
+  // @ManyToOne(() => EngagementTarget, (target) => target.comments, {
+  //   onDelete: 'CASCADE',
+  // })
+  // engagement: EngagementTarget;
 
-  // ✅ Add this:
   @ManyToOne(() => Comment, (comment) => comment.replies, {
     nullable: true,
     onDelete: 'CASCADE',
   })
   parent?: Comment;
 
-  // ✅ Replies now reference `parent`, not `engagement`
   @OneToMany(() => Comment, (comment) => comment.parent, {
     cascade: true,
   })

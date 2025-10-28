@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Like = void 0;
 const typeorm_1 = require("typeorm");
-const engagement_target_entity_1 = require("./engagement-target.entity");
 const base_entity_1 = require("./base/base.entity");
 const comment_entity_1 = require("./comment.entity");
 let Like = class Like extends base_entity_1.BaseEntity {
@@ -22,22 +21,17 @@ __decorate([
     __metadata("design:type", String)
 ], Like.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_id' }),
     __metadata("design:type", String)
 ], Like.prototype, "targetId", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_type' }),
     __metadata("design:type", String)
 ], Like.prototype, "targetType", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => engagement_target_entity_1.EngagementTarget, (target) => target.likes, {
-        onDelete: 'CASCADE',
-    }),
-    __metadata("design:type", engagement_target_entity_1.EngagementTarget)
-], Like.prototype, "engagement", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Like, (like) => like.engagement, {
+    (0, typeorm_1.ManyToOne)(() => Like, (like) => like.children, {
         nullable: true,
+        onDelete: 'CASCADE',
     }),
     __metadata("design:type", Like)
 ], Like.prototype, "parent", void 0);

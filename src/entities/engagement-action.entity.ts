@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, Unique } from 'typeorm';
-import { EngagementTarget } from './engagement-target.entity';
+// import { EngagementTarget } from './engagement-target.entity';
 import { BaseEntity } from './base/base.entity';
 
 @Entity('engagement_actions')
@@ -14,8 +14,8 @@ export class EngagementAction extends BaseEntity {
   @Column()
   targetType: string;
 
-  @ManyToOne(() => EngagementTarget, { onDelete: 'CASCADE' })
-  engagement: EngagementTarget;
+  // @ManyToOne(() => EngagementTarget, { onDelete: 'CASCADE' })
+  // engagement: EngagementTarget;
 
   @Column({
     type: 'enum',

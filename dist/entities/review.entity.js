@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Review = void 0;
 const typeorm_1 = require("typeorm");
 const base_entity_1 = require("./base/base.entity");
-const engagement_target_entity_1 = require("./engagement-target.entity");
 let Review = class Review extends base_entity_1.BaseEntity {
 };
 exports.Review = Review;
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Review.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -25,19 +28,13 @@ __decorate([
     __metadata("design:type", Number)
 ], Review.prototype, "rating", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_id' }),
     __metadata("design:type", String)
 ], Review.prototype, "targetId", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_type' }),
     __metadata("design:type", String)
 ], Review.prototype, "targetType", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => engagement_target_entity_1.EngagementTarget, (target) => target.likes, {
-        onDelete: 'CASCADE',
-    }),
-    __metadata("design:type", engagement_target_entity_1.EngagementTarget)
-], Review.prototype, "engagement", void 0);
 exports.Review = Review = __decorate([
     (0, typeorm_1.Entity)('engageable_reviews')
 ], Review);

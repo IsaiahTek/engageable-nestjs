@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementAction = void 0;
 const typeorm_1 = require("typeorm");
-const engagement_target_entity_1 = require("./engagement-target.entity");
 const base_entity_1 = require("./base/base.entity");
 let EngagementAction = class EngagementAction extends base_entity_1.BaseEntity {
 };
@@ -28,10 +27,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], EngagementAction.prototype, "targetType", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => engagement_target_entity_1.EngagementTarget, { onDelete: 'CASCADE' }),
-    __metadata("design:type", engagement_target_entity_1.EngagementTarget)
-], EngagementAction.prototype, "engagement", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'enum',

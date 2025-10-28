@@ -3,11 +3,11 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EngagementService } from './services/engagement.service';
 import { CommentService } from './services/comment.service';
-import { EngagementTarget } from './entities/engagement-target.entity';
+// import { EngagementTarget } from './entities/engagement-target.entity';
 import { Comment } from './entities/comment.entity';
 import { EngagementController } from './controller/engagement.controller';
 import { EngagementRegistry } from './registry/engagement.registry';
-import { EngagementSubscriber } from './subscribers/engagement.subscriber';
+// import { EngagementSubscriber } from './subscribers/engagement.subscriber';
 import {
   AUTH_GUARD_KEY,
   EngagementOptionsKey,
@@ -32,7 +32,7 @@ export class EngagementModule {
   static register(options?: EngagementOptions): DynamicModule {
     const imports = [
       TypeOrmModule.forFeature([
-        EngagementTarget,
+        // EngagementTarget,
         EngagementAction,
         Comment,
         Like,
@@ -63,7 +63,7 @@ export class EngagementModule {
         CommentService,
         LikeService,
         ReviewService,
-        EngagementSubscriber,
+        // EngagementSubscriber,
         EngagementEmitter,
         {
           provide: EngagementOptionsKey,

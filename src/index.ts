@@ -10,7 +10,7 @@ export * from './services/like.service';
 export * from './services/review.service';
 export * from './entities/engagement-action.entity';
 export * from './entities/comment.entity';
-export * from './entities/engagement-target.entity';
+// export * from './entities/engagement-target.entity';
 export * from './entities/like.entity';
 export * from './entities/review.entity';
 // ... any other public components
@@ -20,7 +20,7 @@ export * from './plugin/engagement.plugin';
 
 // Example: Re-export the utils
 export { EngagementEvent } from './utils/enums';
-export * from './utils/nest-engagements.util';
+// export * from './utils/nest-engagements.util';
 
 // Example: Re-export the constants
 export { UserEntityKey, EngagementOptionsKey, AUTH_GUARD_KEY } from './utils/constants';

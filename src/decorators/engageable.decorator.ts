@@ -6,6 +6,6 @@ export function Engageable(typeName?: string): ClassDecorator {
   return (target) => {
     const name = typeName || target.name.toLowerCase();
     Reflect.defineMetadata(ENGAGEABLE_METADATA_KEY, name, target);
-    EngagementRegistry.register(name, target); // <— new addition
+    EngagementRegistry.register(name, target.name); // <— new addition
   };
 }

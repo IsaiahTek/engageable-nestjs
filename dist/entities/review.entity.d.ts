@@ -1,10 +1,9 @@
 import { BaseEntity } from "./base/base.entity";
-import { EngagementTarget } from "./engagement-target.entity";
 export declare class Review extends BaseEntity {
+    userId: string;
     text: string;
     rating: number;
-    targetId: string;
+    targetId?: string;
     targetType: string;
-    engagement: EngagementTarget;
     user?: any;
 }
