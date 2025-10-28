@@ -3,6 +3,8 @@
 <div style="text-align:center">
 <img src="https://raw.githubusercontent.com/IsaiahTek/engageable-nestjs/main/images/engageable-nestjs-module-icon.png" />
 </div>
+
+
 **engageable** is a powerful, plug-and-play **NestJS engagement plugin** that adds social interaction features like **likes**, **comments**, **bookmarks**, **reposts**, and more — to any entity in your application.
 
 Built with **TypeORM** and **NestJS best practices**, engageable makes it easy to add engagement functionality across your project with minimal setup.
