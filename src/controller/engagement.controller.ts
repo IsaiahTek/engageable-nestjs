@@ -55,6 +55,11 @@ export class EngagementController {
   // ----------------------------------------------------------------------
   // GLOBAL ACTIONS
   // ----------------------------------------------------------------------
+  
+  @Get('/likes')
+  async getAllLikes() {
+    return this.likeService.getAllLikes();
+  }
 
   @Get('/comments')
   async getAllComments() {
