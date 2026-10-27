@@ -14,10 +14,14 @@ class EngagementRegistry {
         return !!this.registry.get(name);
     }
     static isRegisteredByTypeName(typeName) {
-        return !!this.registry.get(typeName.toLowerCase());
+        const lower = typeName?.toLowerCase?.();
+        if (this.otherInternalEngageables.includes(lower))
+            return true;
+        return !!this.registry.get(lower);
     }
     static list() {
-        return Array.from(this.registry.keys());
+        const all = new Set([...this.registry.keys(), ...this.otherInternalEngageables]);
+        return Array.from(all);
     }
     static getRootList() {
         return Array.from(this.registry.keys()).filter((key) => !this.actions.includes(key) &&

@@ -3,7 +3,7 @@ export declare class Review extends BaseEntity {
     userId: string;
     text: string;
     rating: number;
-    targetId?: string;
+    targetId: string;
     targetType: string;
     user?: any;
 }

@@ -85,7 +85,14 @@ export class EngagementModule {
         },
       ],
       controllers: [EngagementController],
-      exports: [EngagementService],
+      exports: [
+        EngagementService,
+        EngagementActionService,
+        CommentService,
+        LikeService,
+        ReviewService,
+        EngagementEmitter,
+      ],
     };
   }
 }

@@ -30,7 +30,6 @@ export class EngagementAuthGuard implements CanActivate {
         `[EngagementAuthGuard] The resolved guard did not attach a user to request.user`,
       );
     }
-    console.log("Request seen as", request.user);
     return result as boolean;
   }
 }

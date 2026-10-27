@@ -10,9 +10,34 @@ export declare class LikeService extends EngagementService {
     protected readonly engagementEmitter: EngagementEmitter;
     protected likeRepo: Repository<Like>;
     constructor(dataSource: DataSource, userEntity: any, options: EngagementOptions, engagementEmitter: EngagementEmitter, likeRepo: Repository<Like>);
-    getAllLikes(): Promise<Like[]>;
-    toggleLike(userId: any, targetType: string, targetId: string): Promise<Like>;
+    getAllLikes(pagination?: {
+        page?: number;
+        limit?: number;
+    }): Promise<{
+        data: Like[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    toggleLike(userId: any, targetType: string, targetId: string): Promise<{
+        liked: boolean;
+        removed: Like;
+        like?: undefined;
+    } | {
+        liked: boolean;
+        like: Like;
+        removed?: undefined;
+    }>;
     countLikes(targetType: string, targetId: string): Promise<number>;
-    _toggleLike(user: any, targetType: string, targetId: string): Promise<Like>;
+    _toggleLike(user: any, targetType: string, targetId: string): Promise<{
+        liked: boolean;
+        removed: Like;
+        like?: undefined;
+    } | {
+        liked: boolean;
+        like: Like;
+        removed?: undefined;
+    }>;
     private _countLikes;
 }

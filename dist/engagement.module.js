@@ -76,7 +76,14 @@ let EngagementModule = EngagementModule_1 = class EngagementModule {
                 },
             ],
             controllers: [engagement_controller_1.EngagementController],
-            exports: [engagement_service_1.EngagementService],
+            exports: [
+                engagement_service_1.EngagementService,
+                engagement_action_service_1.EngagementActionService,
+                comment_service_1.CommentService,
+                like_service_1.LikeService,
+                review_service_1.ReviewService,
+                engagement_emitter_1.EngagementEmitter,
+            ],
         };
     }
 };

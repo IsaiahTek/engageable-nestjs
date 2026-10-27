@@ -61,11 +61,11 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
     async getComments(targetType, targetId) {
         return this._getComments(targetType, targetId);
     }
-    async removeComment(commentId) {
-        return await this._removeComment(commentId);
+    async removeComment(commentId, userId) {
+        return await this._removeComment(commentId, userId);
     }
-    async updateComment(commentId, content) {
-        return await this._updateComment(commentId, content);
+    async updateComment(commentId, content, userId) {
+        return await this._updateComment(commentId, content, userId);
     }
     async getCommentReplies(commentId) {
         const replies = await this.commentRepo.find({
@@ -78,20 +78,22 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
         }
         return replies;
     }
-    async getAllComments() {
-        return this.commentRepo.find({
+    async getAllComments(pagination) {
+        const page = Math.max(pagination?.page || 1, 1);
+        const limit = Math.max(pagination?.limit || 20, 1);
+        const skip = (page - 1) * limit;
+        const [data, total] = await this.commentRepo.findAndCount({
             relations: ['user', 'likes', 'replies', 'replies.user', 'replies.likes'],
             order: { createdAt: 'DESC' },
-        });
-    }
-    async buildCommentTree(comment) {
-        const replies = await this.commentRepo.find({
-            where: { parent: { id: comment.id } },
-            relations: ['user', 'likes'],
+            skip,
+            take: limit,
         });
         return {
-            ...comment,
-            replies: await Promise.all(replies.map((c) => this.buildCommentTree(c))),
+            data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
         };
     }
     async _addComment({ user, targetType, targetId, content, parentId, }) {
@@ -103,49 +105,70 @@ let CommentService = class CommentService extends engagement_service_1.Engagemen
         }
         const comment = this.commentRepo.create({
             user,
-            targetId: targetId,
-            targetType: targetType,
+            targetId,
+            targetType,
             content,
             parent: parentComment,
         });
+        const saved = await this.commentRepo.save(comment);
         this.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_CREATED, {
-            comment,
+            comment: saved,
         });
-        return this.commentRepo.save(comment);
+        return saved;
     }
     async _getComments(targetType, targetId) {
-        const rootComments = await this.commentRepo.find({
+        const comments = await this.commentRepo.find({
             where: {
                 targetType,
                 targetId,
-                parent: null,
             },
             relations: [
                 'user',
                 'likes',
                 'likes.user',
+                'parent',
             ],
-            order: { createdAt: 'DESC' },
+            order: { createdAt: 'ASC' },
         });
-        return Promise.all(rootComments.map(comment => this.buildCommentTree(comment)));
+        const commentMap = new Map();
+        const rootComments = [];
+        for (const comment of comments) {
+            comment.replies = [];
+            commentMap.set(comment.id, comment);
+        }
+        for (const comment of comments) {
+            if (comment.parent?.id && commentMap.has(comment.parent.id)) {
+                commentMap.get(comment.parent.id).replies.push(comment);
+            }
+            else if (!comment.parent) {
+                rootComments.push(comment);
+            }
+        }
+        return rootComments.reverse();
     }
-    async _updateComment(commentId, content) {
+    async _updateComment(commentId, content, userId) {
         const comment = await this.commentRepo.findOne({
             where: { id: commentId },
         });
         if (!comment)
             throw new common_1.NotFoundException('Comment not found');
+        if (userId && comment.userId && comment.userId !== userId) {
+            throw new common_1.ForbiddenException('You can only update your own comments');
+        }
         comment.content = content;
         return this.commentRepo.save(comment);
     }
-    async _removeComment(commentId) {
+    async _removeComment(commentId, userId) {
         const comment = await this.commentRepo.findOne({
             where: { id: commentId },
         });
         if (!comment)
             throw new common_1.NotFoundException('Comment not found');
-        const result = this.commentRepo.remove(comment);
-        super.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_DELETED, { result });
+        if (userId && comment.userId && comment.userId !== userId) {
+            throw new common_1.ForbiddenException('You can only delete your own comments');
+        }
+        const result = await this.commentRepo.remove(comment);
+        this.engagementEmitter.emit(enums_1.EngagementEvent.COMMENT_DELETED, { result });
         return result;
     }
 };

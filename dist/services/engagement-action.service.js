@@ -56,12 +56,24 @@ let EngagementActionService = class EngagementActionService extends engagement_s
         });
         return { created: true, action: saved };
     }
-    async getAllActions(action) {
-        return this.actionRepository.find({
+    async getAllActions(action, pagination) {
+        const page = Math.max(pagination?.page || 1, 1);
+        const limit = Math.max(pagination?.limit || 20, 1);
+        const skip = (page - 1) * limit;
+        const [data, total] = await this.actionRepository.findAndCount({
             relations: ['user'],
             where: { type: action },
             order: { createdAt: 'DESC' },
+            skip,
+            take: limit,
         });
+        return {
+            data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
     }
     async countActions(targetType, targetId, action) {
         return await this._countActions(targetType, targetId, action);

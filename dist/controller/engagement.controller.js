@@ -35,19 +35,25 @@ let EngagementController = class EngagementController {
         this.reviewService = reviewService;
         this.AuthGuard = AuthGuard;
     }
+    extractUserId(req) {
+        return req.user?.id ?? req.user?.userId ?? req.user?.sub;
+    }
     checkIsRegisteredRoute(targetType) {
         if (!engagement_registry_1.EngagementRegistry.isRegisteredByTypeName(targetType)) {
             throw new common_1.NotFoundException(`Engageable type '${targetType}' is not registered. Allowed types: [${engagement_registry_1.EngagementRegistry.list().join(', ')}]`);
         }
     }
-    async getAllComments() {
-        return this.commentService.getAllComments();
+    async getAllLikes(page, limit) {
+        return this.likeService.getAllLikes({ page, limit });
     }
-    async getAllRevies() {
-        return this.reviewService.getAllReviews();
+    async getAllComments(page, limit) {
+        return this.commentService.getAllComments({ page, limit });
     }
-    async getAllActions(action) {
-        return this.actionService.getAllActions(action);
+    async getAllReviews(page, limit) {
+        return this.reviewService.getAllReviews({ page, limit });
+    }
+    async getAllActions(action, page, limit) {
+        return this.actionService.getAllActions(action, { page, limit });
     }
     async countLikes(targetType, targetId) {
         this.checkIsRegisteredRoute(targetType);
@@ -57,7 +63,7 @@ let EngagementController = class EngagementController {
     }
     async toggleLike(targetType, targetId, req) {
         this.checkIsRegisteredRoute(targetType);
-        const userId = req.user?.id;
+        const userId = this.extractUserId(req);
         return this.likeService.toggleLike(userId, targetType, targetId);
     }
     async getComments(targetType, targetId) {
@@ -66,33 +72,41 @@ let EngagementController = class EngagementController {
     }
     async addComment(targetType, targetId, commentDto, req) {
         this.checkIsRegisteredRoute(targetType);
-        const userId = req.user?.id;
-        return this.commentService.addComment(userId, targetType, targetId, commentDto.comment);
+        const userId = this.extractUserId(req);
+        return this.commentService.addComment(userId, targetType, targetId, commentDto.comment, commentDto.parentId);
     }
-    async deleteComment(targetType, targetId, commentId) {
+    async deleteComment(targetType, targetId, commentId, req) {
         this.checkIsRegisteredRoute(targetType);
-        return this.commentService.removeComment(commentId);
+        const userId = this.extractUserId(req);
+        return this.commentService.removeComment(commentId, userId);
     }
-    async updateComment(targetType, targetId, commentId, commentDto) {
+    async updateComment(targetType, targetId, commentId, commentDto, req) {
         this.checkIsRegisteredRoute(targetType);
-        return this.commentService.updateComment(commentId, commentDto.comment);
+        const userId = this.extractUserId(req);
+        return this.commentService.updateComment(commentId, commentDto.comment, userId);
     }
-    async getReviews(targetType, targetId) {
+    async getReviewSummary(targetType, targetId) {
         this.checkIsRegisteredRoute(targetType);
-        return this.reviewService.getReviews(targetType, targetId);
+        return this.reviewService.getReviewSummary(targetType, targetId);
+    }
+    async getReviews(targetType, targetId, page, limit) {
+        this.checkIsRegisteredRoute(targetType);
+        return this.reviewService.getReviews(targetType, targetId, { page, limit });
     }
     async addReview(targetType, targetId, reviewDto, req) {
         this.checkIsRegisteredRoute(targetType);
-        const userId = req.user?.id;
+        const userId = this.extractUserId(req);
         return this.reviewService.addReview(userId, targetType, targetId, reviewDto);
     }
-    async updateReview(targetType, targetId, reviewId, reviewDto) {
+    async updateReview(targetType, targetId, reviewId, reviewDto, req) {
         this.checkIsRegisteredRoute(targetType);
-        return this.reviewService.updateReview(reviewId, reviewDto);
+        const userId = this.extractUserId(req);
+        return this.reviewService.updateReview(reviewId, reviewDto, userId);
     }
-    async deleteReview(targetType, targetId, reviewId) {
+    async deleteReview(targetType, targetId, reviewId, req) {
         this.checkIsRegisteredRoute(targetType);
-        return this.reviewService.deleteReview(reviewId);
+        const userId = this.extractUserId(req);
+        return this.reviewService.deleteReview(reviewId, userId);
     }
     async countActions(targetType, targetId, action) {
         this.checkIsRegisteredRoute(targetType);
@@ -102,29 +116,51 @@ let EngagementController = class EngagementController {
     }
     async toggleAction(targetType, targetId, action, req) {
         this.checkIsRegisteredRoute(targetType);
-        const userId = req.user?.id;
+        const userId = this.extractUserId(req);
         return this.actionService.toggleAction(userId, targetType, targetId, action);
     }
 };
 exports.EngagementController = EngagementController;
 __decorate([
-    (0, common_1.Get)('/comments'),
+    (0, common_1.Get)('/likes'),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "getAllLikes", null);
+__decorate([
+    (0, common_1.Get)('/comments'),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "getAllComments", null);
 __decorate([
     (0, common_1.Get)('/reviews'),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
-], EngagementController.prototype, "getAllRevies", null);
+], EngagementController.prototype, "getAllReviews", null);
 __decorate([
     (0, common_1.Get)('/:action'),
     (0, swagger_1.ApiProperty)({ enum: user_entity_type_1.EngagementActionType }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Param)('action')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number, Number]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "getAllActions", null);
 __decorate([
@@ -170,8 +206,9 @@ __decorate([
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('commentId')),
+    __param(3, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "deleteComment", null);
 __decorate([
@@ -181,16 +218,29 @@ __decorate([
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('commentId')),
     __param(3, (0, common_1.Body)()),
+    __param(4, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, comment_dto_1.CommentDto]),
+    __metadata("design:paramtypes", [String, String, String, comment_dto_1.CommentDto, Object]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "updateComment", null);
 __decorate([
-    (0, common_1.Get)(':targetType/:targetId/reviews'),
+    (0, common_1.Get)(':targetType/:targetId/reviews/summary'),
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], EngagementController.prototype, "getReviewSummary", null);
+__decorate([
+    (0, common_1.Get)(':targetType/:targetId/reviews'),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    __param(0, (0, common_1.Param)('targetType')),
+    __param(1, (0, common_1.Param)('targetId')),
+    __param(2, (0, common_1.Query)('page')),
+    __param(3, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Number, Number]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "getReviews", null);
 __decorate([
@@ -211,8 +261,9 @@ __decorate([
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('reviewId')),
     __param(3, (0, common_1.Body)()),
+    __param(4, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, review_dto_1.ReviewDto]),
+    __metadata("design:paramtypes", [String, String, String, review_dto_1.ReviewDto, Object]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "updateReview", null);
 __decorate([
@@ -221,8 +272,9 @@ __decorate([
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('reviewId')),
+    __param(3, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "deleteReview", null);
 __decorate([

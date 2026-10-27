@@ -14,22 +14,67 @@ export declare class EngagementController {
     private readonly reviewService;
     private readonly AuthGuard;
     constructor(service: EngagementService, actionService: EngagementActionService, commentService: CommentService, likeService: LikeService, reviewService: ReviewService, AuthGuard: any);
+    private extractUserId;
     private checkIsRegisteredRoute;
-    getAllComments(): Promise<import("..").Comment[]>;
-    getAllRevies(): Promise<import("..").Review[]>;
-    getAllActions(action: EngagementActionType): Promise<import("..").EngagementAction[]>;
+    getAllLikes(page?: number, limit?: number): Promise<{
+        data: import("..").Like[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    getAllComments(page?: number, limit?: number): Promise<{
+        data: import("..").Comment[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    getAllReviews(page?: number, limit?: number): Promise<{
+        data: import("..").Review[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    getAllActions(action: EngagementActionType, page?: number, limit?: number): Promise<{
+        data: import("..").EngagementAction[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     countLikes(targetType: string, targetId: string): Promise<{
         count: number;
     }>;
-    toggleLike(targetType: string, targetId: string, req: any): Promise<import("..").Like>;
+    toggleLike(targetType: string, targetId: string, req: any): Promise<{
+        liked: boolean;
+        removed: import("..").Like;
+        like?: undefined;
+    } | {
+        liked: boolean;
+        like: import("..").Like;
+        removed?: undefined;
+    }>;
     getComments(targetType: string, targetId: string): Promise<import("..").Comment[]>;
     addComment(targetType: string, targetId: string, commentDto: CommentDto, req: any): Promise<import("..").Comment>;
-    deleteComment(targetType: string, targetId: string, commentId: string): Promise<import("..").Comment>;
-    updateComment(targetType: string, targetId: string, commentId: string, commentDto: CommentDto): Promise<import("..").Comment>;
-    getReviews(targetType: string, targetId: string): Promise<import("..").Review[]>;
+    deleteComment(targetType: string, targetId: string, commentId: string, req: any): Promise<import("..").Comment>;
+    updateComment(targetType: string, targetId: string, commentId: string, commentDto: CommentDto, req: any): Promise<import("..").Comment>;
+    getReviewSummary(targetType: string, targetId: string): Promise<{
+        averageRating: number;
+        totalReviews: number;
+        distribution: Record<number, number>;
+    }>;
+    getReviews(targetType: string, targetId: string, page?: number, limit?: number): Promise<import("..").Review[] | {
+        data: import("..").Review[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     addReview(targetType: string, targetId: string, reviewDto: ReviewDto, req: any): Promise<import("..").Review>;
-    updateReview(targetType: string, targetId: string, reviewId: string, reviewDto: ReviewDto): Promise<import("..").Review>;
-    deleteReview(targetType: string, targetId: string, reviewId: string): Promise<import("..").Review>;
+    updateReview(targetType: string, targetId: string, reviewId: string, reviewDto: ReviewDto, req: any): Promise<import("..").Review>;
+    deleteReview(targetType: string, targetId: string, reviewId: string, req: any): Promise<import("..").Review>;
     countActions(targetType: string, targetId: string, action: EngagementActionType): Promise<{
         count: number;
     }>;

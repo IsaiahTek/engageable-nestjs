@@ -32,7 +32,6 @@ let EngagementAuthGuard = class EngagementAuthGuard {
         if (!request.user) {
             console.warn(`[EngagementAuthGuard] The resolved guard did not attach a user to request.user`);
         }
-        console.log("Request seen as", request.user);
         return result;
     }
 };

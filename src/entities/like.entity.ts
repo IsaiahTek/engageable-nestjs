@@ -1,10 +1,10 @@
 // like.entity.ts
-import { Column, Entity, ManyToOne } from 'typeorm';
-// import { EngagementTarget } from './engagement-target.entity';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { BaseEntity } from './base/base.entity';
 import { Comment } from './comment.entity';
 
 @Entity('engageable_likes')
+@Unique(['userId', 'targetType', 'targetId'])
 export class Like extends BaseEntity {
 
   @Column({ nullable: true })
@@ -16,28 +16,24 @@ export class Like extends BaseEntity {
   @Column({ type: 'varchar', name: 'target_type' })
   targetType: string;
 
-  // @ManyToOne(() => EngagementTarget, (target) => target.likes, {
-  //   onDelete: 'CASCADE',
-  // })
-  // engagement: EngagementTarget;
-
-  // @ManyToOne(() => Like, (like) => like.engagement, {
-  //   nullable: true,
-  // })
-  // parent: Like;
-
-
-  @ManyToOne(() => Like, (like) => like.children, { // Corrected inverse property name
+  @ManyToOne(() => Like, (like) => like.children, {
     nullable: true,
-    onDelete: 'CASCADE', // Added CASCADE for recursive deletion safety
+    onDelete: 'CASCADE',
   })
   parent: Like;
-  
-  // Define the inverse side for the parent/child relationship
-  children: Like[]; // This is not a column, but the inverse side of the relationship
 
-  @ManyToOne(() => Comment, (comment) => comment.likes, { nullable: true })
+  children: Like[];
+
+  @ManyToOne(() => Comment, (comment) => comment.likes, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'comment_id' })
   comment: Comment;
+
+  @Column({ nullable: true, name: 'comment_id' })
+  commentId?: string;
 
   user?: any;
 }
+

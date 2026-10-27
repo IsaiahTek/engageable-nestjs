@@ -17,11 +17,20 @@ class CommentDto {
 exports.CommentDto = CommentDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'comment',
+        description: 'comment content',
         required: true,
     }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CommentDto.prototype, "comment", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        description: 'Parent comment ID if replying to a comment',
+        required: false,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CommentDto.prototype, "parentId", void 0);
 //# sourceMappingURL=comment.dto.js.map

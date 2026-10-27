@@ -11,7 +11,16 @@ export declare class ReviewService extends EngagementService {
     protected readonly engagementEmitter: EngagementEmitter;
     protected reviewRepo: Repository<Review>;
     constructor(dataSource: DataSource, userEntity: any, options: EngagementOptions, engagementEmitter: EngagementEmitter, reviewRepo: Repository<Review>);
-    getAllReviews(): Promise<Review[]>;
+    getAllReviews(pagination?: {
+        page?: number;
+        limit?: number;
+    }): Promise<{
+        data: Review[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     addReview(userId: any, targetType: string, targetId: string, review: ReviewDto): Promise<Review>;
     _addReview({ user, targetType, targetId, review }: {
         user: any;
@@ -19,8 +28,31 @@ export declare class ReviewService extends EngagementService {
         targetId: string;
         review: ReviewDto;
     }): Promise<Review>;
-    getReviews(targetType: string, targetId: string): Promise<Review[]>;
-    _getReviews(targetType: string, targetId: string): Promise<Review[]>;
-    deleteReview(reviewId: string): Promise<Review>;
-    updateReview(reviewId: string, reviewDto: ReviewDto): Promise<Review>;
+    getReviews(targetType: string, targetId: string, pagination?: {
+        page?: number;
+        limit?: number;
+    }): Promise<Review[] | {
+        data: Review[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    _getReviews(targetType: string, targetId: string, pagination?: {
+        page?: number;
+        limit?: number;
+    }): Promise<Review[] | {
+        data: Review[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    getReviewSummary(targetType: string, targetId: string): Promise<{
+        averageRating: number;
+        totalReviews: number;
+        distribution: Record<number, number>;
+    }>;
+    deleteReview(reviewId: string, userId?: string): Promise<Review>;
+    updateReview(reviewId: string, reviewDto: ReviewDto, userId?: string): Promise<Review>;
 }

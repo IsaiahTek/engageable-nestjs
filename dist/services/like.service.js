@@ -30,11 +30,23 @@ let LikeService = class LikeService extends engagement_service_1.EngagementServi
         this.engagementEmitter = engagementEmitter;
         this.likeRepo = likeRepo;
     }
-    async getAllLikes() {
-        return this.likeRepo.find({
+    async getAllLikes(pagination) {
+        const page = Math.max(pagination?.page || 1, 1);
+        const limit = Math.max(pagination?.limit || 20, 1);
+        const skip = (page - 1) * limit;
+        const [data, total] = await this.likeRepo.findAndCount({
             relations: ['user'],
             order: { createdAt: 'DESC' },
+            skip,
+            take: limit,
         });
+        return {
+            data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
     }
     async toggleLike(userId, targetType, targetId) {
         if (this.hasUserSupport && !this.options.allowAnonymous) {
@@ -68,16 +80,18 @@ let LikeService = class LikeService extends engagement_service_1.EngagementServi
             this.engagementEmitter.emit(enums_1.EngagementEvent.LIKE_DELETED, {
                 like: result,
             });
-            return result;
+            return { liked: false, removed: result };
         }
+        const isComment = targetType.toLowerCase() === 'comment';
         const like = this.likeRepo.create({
             user,
             targetId,
             targetType,
+            commentId: isComment ? targetId : undefined,
         });
         const saved = await this.likeRepo.save(like);
         this.engagementEmitter.emit(enums_1.EngagementEvent.LIKE_CREATED, { like: saved });
-        return saved;
+        return { liked: true, like: saved };
     }
     async _countLikes(targetType, targetId) {
         return this.likeRepo.count({

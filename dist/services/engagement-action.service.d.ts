@@ -20,7 +20,16 @@ export declare class EngagementActionService extends EngagementService {
         action: EngagementAction;
         removed?: undefined;
     }>;
-    getAllActions(action: EngagementActionType): Promise<EngagementAction[]>;
+    getAllActions(action: EngagementActionType, pagination?: {
+        page?: number;
+        limit?: number;
+    }): Promise<{
+        data: EngagementAction[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
     countActions(targetType: string, targetId: string, action: EngagementActionType): Promise<number>;
     private _countActions;
 }

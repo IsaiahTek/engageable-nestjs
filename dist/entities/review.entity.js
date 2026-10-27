@@ -24,7 +24,15 @@ __decorate([
     __metadata("design:type", String)
 ], Review.prototype, "text", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 10,
+        scale: 2,
+        transformer: {
+            to: (value) => value,
+            from: (value) => (value !== null && value !== undefined ? parseFloat(value) : null),
+        },
+    }),
     __metadata("design:type", Number)
 ], Review.prototype, "rating", void 0);
 __decorate([

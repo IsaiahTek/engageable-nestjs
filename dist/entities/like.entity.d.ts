@@ -7,5 +7,6 @@ export declare class Like extends BaseEntity {
     parent: Like;
     children: Like[];
     comment: Comment;
+    commentId?: string;
     user?: any;
 }

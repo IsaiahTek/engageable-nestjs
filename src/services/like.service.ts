@@ -32,22 +32,28 @@ export class LikeService extends EngagementService {
     super(dataSource, userEntity, options, engagementEmitter);
   }
 
-  async getAllLikes() {
-    return this.likeRepo.find({
+  async getAllLikes(pagination?: { page?: number; limit?: number }) {
+    const page = Math.max(pagination?.page || 1, 1);
+    const limit = Math.max(pagination?.limit || 20, 1);
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.likeRepo.findAndCount({
       relations: ['user'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async toggleLike(userId: any, targetType: string, targetId: string) {
-    // console.log('toggleLike: ', userId, targetType, targetId); // Debugging removed
-
-    // NOTE: The target existence check (this.ensureTarget) is now removed.
-    // If resource existence validation is required, it must be added here 
-    // (e.g., call a specific repository to check if targetId exists for targetType).
-    
-    // Use the passed targetType and targetId directly
-
     if (this.hasUserSupport && !this.options.allowAnonymous) {
       if (!userId) {
         throw new ForbiddenException('Authentication required to like');
@@ -59,12 +65,9 @@ export class LikeService extends EngagementService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      
-      // Pass targetType and targetId directly
+
       return await this._toggleLike(user, targetType, targetId);
     } else {
-      // Anonymous engagement
-      // Pass targetType and targetId directly
       return await this._toggleLike(null, targetType, targetId);
     }
   }
@@ -74,157 +77,42 @@ export class LikeService extends EngagementService {
   }
 
   public async _toggleLike(user: any, targetType: string, targetId: string) {
-    // 1. Check for existing like using polymorphic columns
     const existing = await this.likeRepo.findOne({
       where: { 
-        userId: user ? user.id : null, // Filter by userId or null for anonymous
+        userId: user ? user.id : null,
         targetType,
         targetId,
-        // user and engagement filter REMOVED: where: { user, engagement: target }
       },
     });
 
     if (existing) {
-      // Unlike/Delete existing like
       const result = await this.likeRepo.remove(existing);
       this.engagementEmitter.emit(EngagementEvent.LIKE_DELETED, {
         like: result,
       });
-      return result;
+      return { liked: false, removed: result };
     }
 
-    // 2. Create new like
+    const isComment = targetType.toLowerCase() === 'comment';
     const like = this.likeRepo.create({
       user,
-      targetId,   // Use polymorphic ID directly
-      targetType, // Use polymorphic Type directly
-      // engagement: target, // REMOVED
-      // targetId: target.id,  // REMOVED (and replaced above)
+      targetId,
+      targetType,
+      commentId: isComment ? targetId : undefined,
     });
     
     const saved = await this.likeRepo.save(like);
     this.engagementEmitter.emit(EngagementEvent.LIKE_CREATED, { like: saved });
-    return saved;
+    return { liked: true, like: saved };
   }
 
   private async _countLikes(targetType: string, targetId: string) {
-    // Query directly on the polymorphic columns
     return this.likeRepo.count({
       where: { 
         targetType, 
         targetId 
       },
-      // Removed unnecessary relations
-      // relations: ['engagement'], 
     });
   }
 }
 
-
-
-// import {
-//   ForbiddenException,
-//   Inject,
-//   Injectable,
-//   NotFoundException,
-// } from '@nestjs/common';
-// import { DataSource, Repository } from 'typeorm';
-// import { Like } from '../entities/like.entity';
-// import { EngagementEvent } from '../utils/enums';
-// import { EngagementService } from './engagement.service';
-// import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-// import { EngagementTarget } from '../entities/engagement-target.entity';
-// import { EngagementEmitter } from '../event-emitters/engagement.emitter';
-// import { EngagementOptions } from '../interfaces/engagement-options.interface';
-// import { UserEntityKey, EngagementOptionsKey } from '../utils/constants';
-
-// @Injectable()
-// export class LikeService extends EngagementService {
-//   constructor(
-//     @InjectDataSource() protected readonly dataSource: DataSource,
-//     @InjectRepository(EngagementTarget)
-//     protected targetRepo: Repository<EngagementTarget>,
-//     @Inject(UserEntityKey) protected readonly userEntity: any,
-//     @Inject(EngagementOptionsKey) protected options: EngagementOptions,
-//     protected readonly engagementEmitter: EngagementEmitter,
-//     @InjectRepository(Like)
-//     protected likeRepo: Repository<Like>,
-//   ) {
-//     super(dataSource, targetRepo, userEntity, options, engagementEmitter);
-//   }
-
-//   async getAllLikes() {
-//     return this.likeRepo.find({
-//       relations: ['user'],
-//       order: { createdAt: 'DESC' },
-//     });
-//   }
-
-//   async toggleLike(userId: any, targetType: string, targetId: string) {
-//     console.log('toggleLike: ', userId, targetType, targetId);
-//     const target = await this.ensureTarget(targetType, targetId);
-
-//     if (this.hasUserSupport && !this.options.allowAnonymous) {
-//       if (!userId) {
-//         throw new ForbiddenException('Authentication required to like');
-//       }
-
-//       const userRepo = this.dataSource.getRepository(this.userEntity);
-//       const user = await userRepo.findOne({ where: { id: userId } });
-
-//       if (!user) {
-//         throw new NotFoundException('User not found');
-//       }
-
-//       return await this._toggleLike(user, target.targetType, target.targetId);
-//     } else {
-//       // Anonymous engagement
-//       return await this._toggleLike(null, target.targetType, target.targetId);
-//     }
-//   }
-
-//   async countLikes(targetType: string, targetId: string) {
-//     return await this._countLikes(targetType, targetId);
-//   }
-
-//   public async _toggleLike(user: any, targetType: string, targetId: string) {
-//     const target = await this.targetRepo.findOne({
-//       where: { targetType, targetId },
-//     });
-//     if (!target) throw new NotFoundException('Target not found');
-
-//     const existing = await this.likeRepo.findOne({
-//       where: { user, engagement: target },
-//     });
-//     if (existing) {
-//       const result = await this.likeRepo.remove(existing);
-//       this.engagementEmitter.emit(EngagementEvent.LIKE_DELETED, {
-//         like: result,
-//       });
-//       return result;
-//     }
-
-//     const like = this.likeRepo.create({
-//       user,
-//       engagement: target,
-//       targetId: target.id,
-//       targetType: targetType,
-//     });
-//     const saved = await this.likeRepo.save(like);
-//     this.engagementEmitter.emit(EngagementEvent.LIKE_CREATED, { like: saved });
-//     return saved;
-//   }
-
-//   private async _countLikes(targetType: string, targetId: string) {
-//     const target = await this.targetRepo.findOne({
-//       where: { targetType, targetId },
-//     });
-//     console.log('Likes count for:', targetType, targetId, target);
-//     if (!target) return 0;
-
-//     return this.likeRepo.count({
-//       where: { engagement: { id: target.id } },
-//       relations: ['engagement'],
-//     });
-//   }
-// }

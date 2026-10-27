@@ -5,24 +5,15 @@ const typeorm_1 = require("typeorm");
 const comment_entity_1 = require("../entities/comment.entity");
 const like_entity_1 = require("../entities/like.entity");
 const engagement_action_entity_1 = require("../entities/engagement-action.entity");
-async function getCommentReplies(commentRepo, commentId) {
-    const replies = await commentRepo.find({
-        where: { parent: { id: commentId } },
-        relations: ['user', 'likes', 'actions'],
-        order: { createdAt: 'DESC' },
-    });
-    for (const reply of replies) {
-        reply.replies = await getCommentReplies(commentRepo, reply.id);
-    }
-    return replies;
-}
+const review_entity_1 = require("../entities/review.entity");
 async function fetchAndStructureEngagements(dataSource, rootType, rootIds) {
     const commentRepo = dataSource.getRepository(comment_entity_1.Comment);
     const likeRepo = dataSource.getRepository(like_entity_1.Like);
     const actionRepo = dataSource.getRepository(engagement_action_entity_1.EngagementAction);
+    const reviewRepo = dataSource.getRepository(review_entity_1.Review);
     const engagementMap = new Map();
     rootIds.forEach(id => {
-        engagementMap.set(id, { comments: [], likes: [], actions: [] });
+        engagementMap.set(id, { comments: [], likes: [], actions: [], reviews: [] });
     });
     const likes = await likeRepo.find({
         where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds) },
@@ -34,14 +25,32 @@ async function fetchAndStructureEngagements(dataSource, rootType, rootIds) {
         relations: ['user'],
     });
     actions.forEach(action => engagementMap.get(action.targetId)?.actions.push(action));
-    const rootComments = await commentRepo.find({
-        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds), parent: null },
-        relations: ['user', 'likes', 'actions'],
+    const reviews = await reviewRepo.find({
+        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds) },
+        relations: ['user'],
         order: { createdAt: 'DESC' },
     });
-    for (const rootComment of rootComments) {
-        rootComment.replies = await getCommentReplies(commentRepo, rootComment.id);
-        engagementMap.get(rootComment.targetId)?.comments.push(rootComment);
+    reviews.forEach(review => engagementMap.get(review.targetId)?.reviews.push(review));
+    const allComments = await commentRepo.find({
+        where: { targetType: rootType, targetId: (0, typeorm_1.In)(rootIds) },
+        relations: ['user', 'likes', 'parent'],
+        order: { createdAt: 'ASC' },
+    });
+    const commentLookup = new Map();
+    for (const c of allComments) {
+        c.replies = [];
+        commentLookup.set(c.id, c);
+    }
+    for (const c of allComments) {
+        if (c.parent?.id && commentLookup.has(c.parent.id)) {
+            commentLookup.get(c.parent.id).replies.push(c);
+        }
+        else if (!c.parent) {
+            engagementMap.get(c.targetId)?.comments.push(c);
+        }
+    }
+    for (const [, eng] of engagementMap) {
+        eng.comments.reverse();
     }
     return engagementMap;
 }
@@ -61,7 +70,7 @@ class EngageablePlugin {
         const rootIds = items.map((item) => item.id);
         const engagementMap = await fetchAndStructureEngagements(dataSource, rootType, rootIds);
         const data = items.map((item) => {
-            const engagements = engagementMap.get(item.id) || { comments: [], likes: [], actions: [] };
+            const engagements = engagementMap.get(item.id) || { comments: [], likes: [], actions: [], reviews: [] };
             item._engagements = engagements;
             return transform ? transform(item) : item;
         });

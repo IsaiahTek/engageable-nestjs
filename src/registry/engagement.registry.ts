@@ -23,11 +23,14 @@ export class EngagementRegistry {
   }
 
   static isRegisteredByTypeName(typeName: string): boolean {
-    return !!this.registry.get(typeName.toLowerCase());
+    const lower = typeName?.toLowerCase?.();
+    if (this.otherInternalEngageables.includes(lower)) return true;
+    return !!this.registry.get(lower);
   }
 
   static list(): string[] {
-    return Array.from(this.registry.keys());
+    const all = new Set([...this.registry.keys(), ...this.otherInternalEngageables]);
+    return Array.from(all);
   }
 
   static getRootList(): string[] {

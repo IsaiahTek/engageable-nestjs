@@ -36,10 +36,19 @@ __decorate([
     __metadata("design:type", Like)
 ], Like.prototype, "parent", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => comment_entity_1.Comment, (comment) => comment.likes, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => comment_entity_1.Comment, (comment) => comment.likes, {
+        nullable: true,
+        onDelete: 'CASCADE',
+    }),
+    (0, typeorm_1.JoinColumn)({ name: 'comment_id' }),
     __metadata("design:type", comment_entity_1.Comment)
 ], Like.prototype, "comment", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, name: 'comment_id' }),
+    __metadata("design:type", String)
+], Like.prototype, "commentId", void 0);
 exports.Like = Like = __decorate([
-    (0, typeorm_1.Entity)('engageable_likes')
+    (0, typeorm_1.Entity)('engageable_likes'),
+    (0, typeorm_1.Unique)(['userId', 'targetType', 'targetId'])
 ], Like);
 //# sourceMappingURL=like.entity.js.map
