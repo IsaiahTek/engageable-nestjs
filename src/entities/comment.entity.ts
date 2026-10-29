@@ -9,13 +9,13 @@ export class Comment extends BaseEntity {
   @Column('text')
   content: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'user_id' })
   userId: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'target_id' })
   targetId: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'target_type' })
   targetType: string;
 
   // @ManyToOne(() => EngagementTarget, (target) => target.comments, {

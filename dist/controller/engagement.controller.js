@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EngagementController = void 0;
 const common_1 = require("@nestjs/common");
 const engagement_service_1 = require("../services/engagement.service");
-const swagger_1 = require("@nestjs/swagger");
+const swagger_util_1 = require("../utils/swagger.util");
 const engagement_registry_1 = require("../registry/engagement.registry");
 const comment_dto_1 = require("../dto/comment.dto");
 const comment_service_1 = require("../services/comment.service");
@@ -26,6 +26,16 @@ const constants_1 = require("../utils/constants");
 const auth_decorator_1 = require("../decorators/auth.decorator");
 const review_service_1 = require("../services/review.service");
 const review_dto_1 = require("../dto/review.dto");
+const ACTION_MAP = {
+    repost: user_entity_type_1.EngagementActionType.repost,
+    reposts: user_entity_type_1.EngagementActionType.repost,
+    bookmark: user_entity_type_1.EngagementActionType.bookmark,
+    bookmarks: user_entity_type_1.EngagementActionType.bookmark,
+    share: user_entity_type_1.EngagementActionType.share,
+    shares: user_entity_type_1.EngagementActionType.share,
+    follow: user_entity_type_1.EngagementActionType.follow,
+    follows: user_entity_type_1.EngagementActionType.follow,
+};
 let EngagementController = class EngagementController {
     constructor(service, actionService, commentService, likeService, reviewService, AuthGuard) {
         this.service = service;
@@ -43,6 +53,14 @@ let EngagementController = class EngagementController {
             throw new common_1.NotFoundException(`Engageable type '${targetType}' is not registered. Allowed types: [${engagement_registry_1.EngagementRegistry.list().join(', ')}]`);
         }
     }
+    parseActionType(action) {
+        const normalized = action?.toLowerCase?.();
+        const actionType = ACTION_MAP[normalized];
+        if (!actionType) {
+            throw new common_1.BadRequestException(`Invalid action '${action}'. Allowed actions: [${Object.values(user_entity_type_1.EngagementActionType).join(', ')}]`);
+        }
+        return actionType;
+    }
     async getAllLikes(page, limit) {
         return this.likeService.getAllLikes({ page, limit });
     }
@@ -53,7 +71,8 @@ let EngagementController = class EngagementController {
         return this.reviewService.getAllReviews({ page, limit });
     }
     async getAllActions(action, page, limit) {
-        return this.actionService.getAllActions(action, { page, limit });
+        const validAction = this.parseActionType(action);
+        return this.actionService.getAllActions(validAction, { page, limit });
     }
     async countLikes(targetType, targetId) {
         this.checkIsRegisteredRoute(targetType);
@@ -110,21 +129,23 @@ let EngagementController = class EngagementController {
     }
     async countActions(targetType, targetId, action) {
         this.checkIsRegisteredRoute(targetType);
+        const validAction = this.parseActionType(action);
         return {
-            count: await this.actionService.countActions(targetType, targetId, action),
+            count: await this.actionService.countActions(targetType, targetId, validAction),
         };
     }
     async toggleAction(targetType, targetId, action, req) {
         this.checkIsRegisteredRoute(targetType);
+        const validAction = this.parseActionType(action);
         const userId = this.extractUserId(req);
-        return this.actionService.toggleAction(userId, targetType, targetId, action);
+        return this.actionService.toggleAction(userId, targetType, targetId, validAction);
     }
 };
 exports.EngagementController = EngagementController;
 __decorate([
     (0, common_1.Get)('/likes'),
-    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -133,8 +154,8 @@ __decorate([
 ], EngagementController.prototype, "getAllLikes", null);
 __decorate([
     (0, common_1.Get)('/comments'),
-    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -143,8 +164,8 @@ __decorate([
 ], EngagementController.prototype, "getAllComments", null);
 __decorate([
     (0, common_1.Get)('/reviews'),
-    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -153,9 +174,9 @@ __decorate([
 ], EngagementController.prototype, "getAllReviews", null);
 __decorate([
     (0, common_1.Get)('/:action'),
-    (0, swagger_1.ApiProperty)({ enum: user_entity_type_1.EngagementActionType }),
-    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    (0, swagger_util_1.ApiProperty)({ enum: user_entity_type_1.EngagementActionType }),
+    (0, swagger_util_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Param)('action')),
     __param(1, (0, common_1.Query)('page')),
     __param(2, (0, common_1.Query)('limit')),
@@ -233,8 +254,8 @@ __decorate([
 ], EngagementController.prototype, "getReviewSummary", null);
 __decorate([
     (0, common_1.Get)(':targetType/:targetId/reviews'),
-    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'page', required: false, type: Number }),
+    (0, swagger_util_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Query)('page')),
@@ -278,7 +299,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "deleteReview", null);
 __decorate([
-    (0, common_1.Get)(':targetType/:targetId/action/:action' + 's'),
+    (0, common_1.Get)([':targetType/:targetId/action/:action', ':targetType/:targetId/actions/:action']),
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('action')),
@@ -288,7 +309,7 @@ __decorate([
 ], EngagementController.prototype, "countActions", null);
 __decorate([
     (0, auth_decorator_1.UseEngagementAuth)(),
-    (0, common_1.Post)(':targetType/:targetId/action/:action'),
+    (0, common_1.Post)([':targetType/:targetId/action/:action', ':targetType/:targetId/actions/:action']),
     __param(0, (0, common_1.Param)('targetType')),
     __param(1, (0, common_1.Param)('targetId')),
     __param(2, (0, common_1.Param)('action')),
@@ -298,7 +319,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EngagementController.prototype, "toggleAction", null);
 exports.EngagementController = EngagementController = __decorate([
-    (0, swagger_1.ApiTags)('Engagement'),
+    (0, swagger_util_1.ApiTags)('Engagement'),
     (0, common_1.Controller)({ path: 'engagement', version: '1' }),
     __param(5, (0, common_1.Inject)(constants_1.AUTH_GUARD_KEY)),
     __metadata("design:paramtypes", [engagement_service_1.EngagementService,

@@ -16,7 +16,7 @@ let Review = class Review extends base_entity_1.BaseEntity {
 };
 exports.Review = Review;
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, name: 'user_id' }),
     __metadata("design:type", String)
 ], Review.prototype, "userId", void 0);
 __decorate([

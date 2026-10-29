@@ -21,15 +21,15 @@ __decorate([
     __metadata("design:type", String)
 ], Comment.prototype, "content", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, name: 'user_id' }),
     __metadata("design:type", String)
 ], Comment.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_id' }),
     __metadata("design:type", String)
 ], Comment.prototype, "targetId", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'varchar', name: 'target_type' }),
     __metadata("design:type", String)
 ], Comment.prototype, "targetType", void 0);
 __decorate([

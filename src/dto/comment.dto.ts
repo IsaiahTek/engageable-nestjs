@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '../utils/swagger.util';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CommentDto {

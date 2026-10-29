@@ -5,13 +5,13 @@ import { BaseEntity } from './base/base.entity';
 @Entity('engagement_actions')
 @Unique(['userId', 'targetId', 'targetType', 'type'])
 export class EngagementAction extends BaseEntity {
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'user_id' })
   userId?: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'target_id' })
   targetId: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'target_type' })
   targetType: string;
 
   // @ManyToOne(() => EngagementTarget, { onDelete: 'CASCADE' })

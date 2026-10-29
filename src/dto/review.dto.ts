@@ -1,7 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDecimal, IsNotEmpty, IsNumber, IsString, Max, Min, min } from "class-validator";
+import { ApiProperty } from "../utils/swagger.util";
+import { IsNotEmpty, IsNumber, IsString, Max, Min } from "class-validator";
 import { Type } from "class-transformer";
-import { Double } from "typeorm";
 import { IsHalfStep } from "../decorators/is-half-step.decorator";
 
 export class ReviewDto {

@@ -111,11 +111,14 @@ let ReviewService = class ReviewService extends engagement_service_1.EngagementS
         });
     }
     async getReviewSummary(targetType, targetId) {
-        const reviews = await this.reviewRepo.find({
-            where: { targetType, targetId },
-            select: ['rating'],
-        });
-        const totalReviews = reviews.length;
+        const summary = await this.reviewRepo
+            .createQueryBuilder('review')
+            .select('COUNT(*)', 'total')
+            .addSelect('AVG(review.rating)', 'average')
+            .where('review.targetType = :targetType', { targetType })
+            .andWhere('review.targetId = :targetId', { targetId })
+            .getRawOne();
+        const totalReviews = Number(summary?.total) || 0;
         if (totalReviews === 0) {
             return {
                 averageRating: 0,
@@ -123,15 +126,21 @@ let ReviewService = class ReviewService extends engagement_service_1.EngagementS
                 distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 },
             };
         }
-        let sum = 0;
+        const rawAvg = Number(summary?.average) || 0;
+        const averageRating = Math.round(rawAvg * 100) / 100;
+        const distRows = await this.reviewRepo
+            .createQueryBuilder('review')
+            .select('FLOOR(review.rating)', 'star')
+            .addSelect('COUNT(*)', 'count')
+            .where('review.targetType = :targetType', { targetType })
+            .andWhere('review.targetId = :targetId', { targetId })
+            .groupBy('FLOOR(review.rating)')
+            .getRawMany();
         const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 };
-        for (const r of reviews) {
-            const rating = Number(r.rating) || 0;
-            sum += rating;
-            const floorStar = Math.min(5, Math.max(0, Math.floor(rating)));
-            distribution[floorStar] = (distribution[floorStar] || 0) + 1;
+        for (const row of distRows) {
+            const star = Math.min(5, Math.max(0, Math.floor(Number(row.star))));
+            distribution[star] = (distribution[star] || 0) + Number(row.count);
         }
-        const averageRating = Math.round((sum / totalReviews) * 100) / 100;
         return {
             averageRating,
             totalReviews,

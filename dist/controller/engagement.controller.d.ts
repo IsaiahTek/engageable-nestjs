@@ -2,7 +2,6 @@ import { EngagementService } from '../services/engagement.service';
 import { CommentDto } from '../dto/comment.dto';
 import { CommentService } from '../services/comment.service';
 import { EngagementActionService } from '../services/engagement-action.service';
-import { EngagementActionType } from '../interfaces/user_entity.type';
 import { LikeService } from '../services/like.service';
 import { ReviewService } from '../services/review.service';
 import { ReviewDto } from '../dto/review.dto';
@@ -16,6 +15,7 @@ export declare class EngagementController {
     constructor(service: EngagementService, actionService: EngagementActionService, commentService: CommentService, likeService: LikeService, reviewService: ReviewService, AuthGuard: any);
     private extractUserId;
     private checkIsRegisteredRoute;
+    private parseActionType;
     getAllLikes(page?: number, limit?: number): Promise<{
         data: import("..").Like[];
         total: number;
@@ -37,7 +37,7 @@ export declare class EngagementController {
         limit: number;
         totalPages: number;
     }>;
-    getAllActions(action: EngagementActionType, page?: number, limit?: number): Promise<{
+    getAllActions(action: string, page?: number, limit?: number): Promise<{
         data: import("..").EngagementAction[];
         total: number;
         page: number;
@@ -75,10 +75,10 @@ export declare class EngagementController {
     addReview(targetType: string, targetId: string, reviewDto: ReviewDto, req: any): Promise<import("..").Review>;
     updateReview(targetType: string, targetId: string, reviewId: string, reviewDto: ReviewDto, req: any): Promise<import("..").Review>;
     deleteReview(targetType: string, targetId: string, reviewId: string, req: any): Promise<import("..").Review>;
-    countActions(targetType: string, targetId: string, action: EngagementActionType): Promise<{
+    countActions(targetType: string, targetId: string, action: string): Promise<{
         count: number;
     }>;
-    toggleAction(targetType: string, targetId: string, action: EngagementActionType, req: any): Promise<{
+    toggleAction(targetType: string, targetId: string, action: string, req: any): Promise<{
         removed: boolean;
         created?: undefined;
         action?: undefined;

@@ -10,13 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentDto = void 0;
-const swagger_1 = require("@nestjs/swagger");
+const swagger_util_1 = require("../utils/swagger.util");
 const class_validator_1 = require("class-validator");
 class CommentDto {
 }
 exports.CommentDto = CommentDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
+    (0, swagger_util_1.ApiProperty)({
         description: 'comment content',
         required: true,
     }),
@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], CommentDto.prototype, "comment", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({
+    (0, swagger_util_1.ApiPropertyOptional)({
         description: 'Parent comment ID if replying to a comment',
         required: false,
     }),

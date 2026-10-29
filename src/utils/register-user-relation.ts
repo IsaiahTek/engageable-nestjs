@@ -8,40 +8,26 @@ export function registerUserRelation(userEntity: any) {
   if (!userEntity) return;
 
   const storage = getMetadataArgsStorage();
+  const entities = [Like, EngagementAction, Comment, Review];
 
-  storage.relations.push({
-    target: Like,
-    propertyName: 'user',
-    relationType: 'many-to-one',
-    type: () => userEntity,
-    options: { onDelete: 'CASCADE', nullable: true, eager: true },
-    isLazy: false,
-  });
+  for (const entity of entities) {
+    if (!storage.relations.some((r) => r.target === entity && r.propertyName === 'user')) {
+      storage.relations.push({
+        target: entity,
+        propertyName: 'user',
+        relationType: 'many-to-one',
+        type: () => userEntity,
+        options: { onDelete: 'CASCADE', nullable: true, eager: true },
+        isLazy: false,
+      });
+    }
 
-  storage.relations.push({
-    target: EngagementAction,
-    propertyName: 'user',
-    relationType: 'many-to-one',
-    type: () => userEntity,
-    options: { onDelete: 'CASCADE', nullable: true, eager: true },
-    isLazy: false,
-  });
-
-  storage.relations.push({
-    target: Comment,
-    propertyName: 'user',
-    relationType: 'many-to-one',
-    type: () => userEntity,
-    options: { onDelete: 'CASCADE', nullable: true, eager: true },
-    isLazy: false,
-  });
-
-  storage.relations.push({
-    target: Review,
-    propertyName: 'user',
-    relationType: 'many-to-one',
-    type: () => userEntity,
-    options: { onDelete: 'CASCADE', nullable: true, eager: true },
-    isLazy: false,
-  });
+    if (!storage.joinColumns.some((jc) => jc.target === entity && jc.propertyName === 'user')) {
+      storage.joinColumns.push({
+        target: entity,
+        propertyName: 'user',
+        name: 'user_id',
+      });
+    }
+  }
 }

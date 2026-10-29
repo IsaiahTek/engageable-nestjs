@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewDto = void 0;
-const swagger_1 = require("@nestjs/swagger");
+const swagger_util_1 = require("../utils/swagger.util");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const is_half_step_decorator_1 = require("../decorators/is-half-step.decorator");
@@ -18,7 +18,7 @@ class ReviewDto {
 }
 exports.ReviewDto = ReviewDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
+    (0, swagger_util_1.ApiProperty)({
         description: 'review',
         required: true,
     }),
@@ -27,7 +27,7 @@ __decorate([
     __metadata("design:type", String)
 ], ReviewDto.prototype, "text", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
+    (0, swagger_util_1.ApiProperty)({
         description: 'rating',
         required: true,
     }),

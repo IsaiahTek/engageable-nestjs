@@ -6,13 +6,14 @@ import {
   Body,
   Request,
   NotFoundException,
+  BadRequestException,
   Delete,
   Put,
   Inject,
   Query,
 } from '@nestjs/common';
 import { EngagementService } from '../services/engagement.service';
-import { ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiQuery, ApiTags } from '../utils/swagger.util';
 import { EngagementRegistry } from '../registry/engagement.registry';
 import { CommentDto } from '../dto/comment.dto';
 import { CommentService } from '../services/comment.service';
@@ -23,6 +24,17 @@ import { AUTH_GUARD_KEY } from '../utils/constants';
 import { UseEngagementAuth } from '../decorators/auth.decorator';
 import { ReviewService } from '../services/review.service';
 import { ReviewDto } from '../dto/review.dto';
+
+const ACTION_MAP: Record<string, EngagementActionType> = {
+  repost: EngagementActionType.repost,
+  reposts: EngagementActionType.repost,
+  bookmark: EngagementActionType.bookmark,
+  bookmarks: EngagementActionType.bookmark,
+  share: EngagementActionType.share,
+  shares: EngagementActionType.share,
+  follow: EngagementActionType.follow,
+  follows: EngagementActionType.follow,
+};
 
 @ApiTags('Engagement')
 @Controller({ path: 'engagement', version: '1' })
@@ -46,6 +58,17 @@ export class EngagementController {
         `Engageable type '${targetType}' is not registered. Allowed types: [${EngagementRegistry.list().join(', ')}]`,
       );
     }
+  }
+
+  private parseActionType(action: string): EngagementActionType {
+    const normalized = action?.toLowerCase?.();
+    const actionType = ACTION_MAP[normalized];
+    if (!actionType) {
+      throw new BadRequestException(
+        `Invalid action '${action}'. Allowed actions: [${Object.values(EngagementActionType).join(', ')}]`,
+      );
+    }
+    return actionType;
   }
 
   // ----------------------------------------------------------------------
@@ -87,11 +110,12 @@ export class EngagementController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   async getAllActions(
-    @Param('action') action: EngagementActionType,
+    @Param('action') action: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
-    return this.actionService.getAllActions(action, { page, limit });
+    const validAction = this.parseActionType(action);
+    return this.actionService.getAllActions(validAction, { page, limit });
   }
   
   // ----------------------------------------------------------------------
@@ -250,37 +274,39 @@ export class EngagementController {
   // GENERIC ACTION ROUTES (e.g., bookmark, repost, follow)
   // ----------------------------------------------------------------------
 
-  @Get(':targetType/:targetId/action/:action' + 's')
+  @Get([':targetType/:targetId/action/:action', ':targetType/:targetId/actions/:action'])
   async countActions(
     @Param('targetType') targetType: string,
     @Param('targetId') targetId: string,
-    @Param('action') action: EngagementActionType,
+    @Param('action') action: string,
   ) {
     this.checkIsRegisteredRoute(targetType);
+    const validAction = this.parseActionType(action);
     return {
       count: await this.actionService.countActions(
         targetType,
         targetId,
-        action,
+        validAction,
       ),
     };
   }
 
   @UseEngagementAuth()
-  @Post(':targetType/:targetId/action/:action')
+  @Post([':targetType/:targetId/action/:action', ':targetType/:targetId/actions/:action'])
   async toggleAction(
     @Param('targetType') targetType: string,
     @Param('targetId') targetId: string,
-    @Param('action') action: EngagementActionType,
+    @Param('action') action: string,
     @Request() req: any,
   ) {
     this.checkIsRegisteredRoute(targetType);
+    const validAction = this.parseActionType(action);
     const userId = this.extractUserId(req); 
     return this.actionService.toggleAction(
       userId,
       targetType,
       targetId,
-      action,
+      validAction,
     );
   }
 }

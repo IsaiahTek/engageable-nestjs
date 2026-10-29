@@ -1,9 +1,15 @@
 {
   "name": "engageable-nestjs",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An engagement library/plugin for adding engagement (likes, comments, reviews/ratings, reposts, bookmarks, etc.) to entities in a NestJS application.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "keywords": [
     "reaction",
     "reactions",
@@ -35,18 +41,22 @@
     "build": "tsc",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
-    "link:local": "npm run copy:dist && cd ../build/engageable-nestjs && npm link",
-    "watch": "tsc -w --preserveWatchOutput",
-    "copy:dist": "npm run build && rm -rf ../build/engageable-nestjs && mkdir -p ../build/engageable-nestjs && cp -r dist package.json README.md ../build/engageable-nestjs/",
-    "update:app": "echo 'Syncing build...' && rm -rf ../../web/OgaVerify/apps/backend/node_modules/engageable-nestjs && mkdir -p ../../web/OgaVerify/apps/backend/node_modules/engageable-nestjs && cp -r ../build/engageable-nestjs/* ../../web/OgaVerify/apps/backend/node_modules/engageable-nestjs/ && echo '✅ Sync complete.'",
-    "watch:build:copy": "nodemon --watch src --ext ts --exec \"npm run copy:dist && npm run update:app\""
+    "watch": "tsc -w --preserveWatchOutput"
   },
   "peerDependencies": {
     "@nestjs/common": "^10.0.0 || ^11.0.0",
     "@nestjs/core": "^10.0.0 || ^11.0.0",
-    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/event-emitter": "^3.0.0",
+    "@nestjs/swagger": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/typeorm": "^10.0.0 || ^11.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0 || ^0.14.1",
     "typeorm": "^0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/swagger": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@nestjs/mapped-types": "^2.0.4",

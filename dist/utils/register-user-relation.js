@@ -10,37 +10,25 @@ function registerUserRelation(userEntity) {
     if (!userEntity)
         return;
     const storage = (0, typeorm_1.getMetadataArgsStorage)();
-    storage.relations.push({
-        target: like_entity_1.Like,
-        propertyName: 'user',
-        relationType: 'many-to-one',
-        type: () => userEntity,
-        options: { onDelete: 'CASCADE', nullable: true, eager: true },
-        isLazy: false,
-    });
-    storage.relations.push({
-        target: engagement_action_entity_1.EngagementAction,
-        propertyName: 'user',
-        relationType: 'many-to-one',
-        type: () => userEntity,
-        options: { onDelete: 'CASCADE', nullable: true, eager: true },
-        isLazy: false,
-    });
-    storage.relations.push({
-        target: comment_entity_1.Comment,
-        propertyName: 'user',
-        relationType: 'many-to-one',
-        type: () => userEntity,
-        options: { onDelete: 'CASCADE', nullable: true, eager: true },
-        isLazy: false,
-    });
-    storage.relations.push({
-        target: review_entity_1.Review,
-        propertyName: 'user',
-        relationType: 'many-to-one',
-        type: () => userEntity,
-        options: { onDelete: 'CASCADE', nullable: true, eager: true },
-        isLazy: false,
-    });
+    const entities = [like_entity_1.Like, engagement_action_entity_1.EngagementAction, comment_entity_1.Comment, review_entity_1.Review];
+    for (const entity of entities) {
+        if (!storage.relations.some((r) => r.target === entity && r.propertyName === 'user')) {
+            storage.relations.push({
+                target: entity,
+                propertyName: 'user',
+                relationType: 'many-to-one',
+                type: () => userEntity,
+                options: { onDelete: 'CASCADE', nullable: true, eager: true },
+                isLazy: false,
+            });
+        }
+        if (!storage.joinColumns.some((jc) => jc.target === entity && jc.propertyName === 'user')) {
+            storage.joinColumns.push({
+                target: entity,
+                propertyName: 'user',
+                name: 'user_id',
+            });
+        }
+    }
 }
 //# sourceMappingURL=register-user-relation.js.map

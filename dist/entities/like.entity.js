@@ -17,7 +17,7 @@ let Like = class Like extends base_entity_1.BaseEntity {
 };
 exports.Like = Like;
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, name: 'user_id' }),
     __metadata("design:type", String)
 ], Like.prototype, "userId", void 0);
 __decorate([

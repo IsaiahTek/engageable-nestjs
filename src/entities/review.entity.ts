@@ -4,7 +4,7 @@ import { BaseEntity } from "./base/base.entity";
 @Entity('engageable_reviews')
 export class Review extends BaseEntity {
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, name: 'user_id' })
     userId: string;
 
     @Column()

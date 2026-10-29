@@ -1,33 +1,46 @@
 // src/index.ts
 
-// Example: Re-export the main module and public decorators/services
+// Module & Controller
 export * from './engagement.module';
+export * from './controller/engagement.controller';
+
+// Decorators
 export * from './decorators/engageable.decorator';
+export * from './decorators/auth.decorator';
+export * from './decorators/is-half-step.decorator';
+
+// Services & Emitter
 export * from './services/engagement.service';
 export * from './services/engagement-action.service';
 export * from './services/comment.service';
 export * from './services/like.service';
 export * from './services/review.service';
+export * from './event-emitters/engagement.emitter';
+
+// Entities
 export * from './entities/engagement-action.entity';
 export * from './entities/comment.entity';
-// export * from './entities/engagement-target.entity';
 export * from './entities/like.entity';
 export * from './entities/review.entity';
-// ... any other public components
 
-// Example: Re-export the plugin
+// DTOs
+export * from './dto/comment.dto';
+export * from './dto/review.dto';
+
+// Registry
+export * from './registry/engagement.registry';
+
+// Plugin
 export * from './plugin/engagement.plugin';
 
-// Example: Re-export the utils
+// Utils & Helpers
+export { registerUserRelation } from './utils/register-user-relation';
 export { EngagementEvent } from './utils/enums';
-// export * from './utils/nest-engagements.util';
-
-// Example: Re-export the constants
 export { UserEntityKey, EngagementOptionsKey, AUTH_GUARD_KEY } from './utils/constants';
 
-// Example: Re-export the interfaces
+// Interfaces & Types
 export * from './interfaces/engagement-options.interface';
 export * from './interfaces/user_entity.type';
 
-// Example: Re-export the decorators
-export * from './decorators/auth.decorator';
+// Guard
+export * from './default-auth-guard';

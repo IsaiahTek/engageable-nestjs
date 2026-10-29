@@ -7,7 +7,7 @@ import { Comment } from './comment.entity';
 @Unique(['userId', 'targetType', 'targetId'])
 export class Like extends BaseEntity {
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'user_id' })
   userId: string;
 
   @Column({ type: 'varchar', name: 'target_id' })
